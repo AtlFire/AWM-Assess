@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Property Wildfire Assessment</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Assess">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1d5946">
+<style>
+:root{
+  --bg:#eaefeb; --surface:#ffffff; --ink:#15201b; --muted:#54635c; --line:#c9d3cd;
+  --brand:#1d5946; --brand-ink:#ffffff; --good:#2b7a4b; --good-bg:#e3f2e8;
+  --fair:#9a5b00; --fair-bg:#fff2d9; --poor:#ae2a22; --poor-bg:#fbe6e3; --shadow:rgba(20,32,27,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121a17; --surface:#1b2622; --ink:#e8efeb; --muted:#9db0a7; --line:#33443d;
+    --brand:#5fb896; --brand-ink:#0b1712; --good:#6fcf95; --good-bg:#183524;
+    --fair:#f0b45a; --fair-bg:#3a2b10; --poor:#ff8a80; --poor-bg:#411b18; --shadow:rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121a17; --surface:#1b2622; --ink:#e8efeb; --muted:#9db0a7; --line:#33443d;
+  --brand:#5fb896; --brand-ink:#0b1712; --good:#6fcf95; --good-bg:#183524;
+  --fair:#f0b45a; --fair-bg:#3a2b10; --poor:#ff8a80; --poor-bg:#411b18; --shadow:rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-size:17px;line-height:1.4}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:860px;margin:0 auto;padding:0 14px 110px}
+.chrome{position:sticky;top:0;z-index:20;background:var(--bg);padding-top:max(8px,env(safe-area-inset-top));border-bottom:1px solid var(--line)}
+.chrome .wrap{padding-bottom:0}
+.bar{display:flex;align-items:center;gap:10px;padding:4px 0 8px}
+.brandbox{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.brandbox svg,.brandbox img{width:38px;height:38px;flex:0 0 auto;object-fit:contain}
+.brandbox .t{min-width:0}
+.brandbox b{display:block;font-size:16px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brandbox span{display:block;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--brand);background:transparent;color:var(--brand);font-weight:600}
+.btn.solid{background:var(--brand);color:var(--brand-ink)}
+.btn.warn{border-color:var(--poor);color:var(--poor)}
+.btn.small{min-height:38px;padding:0 12px;font-size:15px}
+.btn.block{width:100%}
+.prog{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin:0 0 8px}
+.prog i{display:block;height:100%;background:var(--brand)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;min-height:44px;padding:4px 14px;border-radius:22px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:15px;text-align:center}
+.tab small{display:block;font-weight:500;color:var(--muted);font-size:12px;line-height:1.1}
+.tab.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.tab.on small{color:var(--brand-ink);opacity:.85}
+.tab.alert{border-color:var(--poor)}
+h2{font-size:22px;margin:18px 0 2px}
+.sub{color:var(--muted);margin:0 0 12px;font-size:15px}
+.card,.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:0 1px 2px var(--shadow)}
+.item.flagged{border-color:var(--poor);border-width:2px}
+.item.crit .ttl::after{content:" • priority item";font-weight:500;font-size:13px;color:var(--muted)}
+.ttl{font-weight:700;font-size:18px}
+.hint{color:var(--muted);font-size:15px;margin:2px 0 10px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.seg button{min-height:50px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:600}
+.seg button.on[data-r="g"]{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.seg button.on[data-r="f"]{background:var(--fair-bg);border-color:var(--fair);color:var(--fair)}
+.seg button.on[data-r="p"]{background:var(--poor-bg);border-color:var(--poor);color:var(--poor)}
+.seg button.on[data-r="n"]{background:var(--bg);border-color:var(--muted);color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+textarea,input[type=text],input[type=date],input[type=tel],input[type=email],input[type=url],select{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);min-height:46px}
+textarea{min-height:64px;resize:vertical;margin-top:10px}
+label.f{display:block;margin:0 0 12px;font-weight:600;font-size:15px}
+label.f > *:not(span){margin-top:5px;font-weight:400}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+.flagbtn{min-height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:15px}
+.flagbtn.on{background:var(--poor-bg);border-color:var(--poor);color:var(--poor)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.thumb{position:relative;width:92px;height:92px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb button{position:absolute;top:2px;right:2px;width:30px;height:30px;border-radius:15px;border:none;background:rgba(0,0,0,.65);color:#fff;font-size:16px;line-height:1}
+.esc{display:flex;gap:12px;align-items:flex-start}
+.esc .seg{grid-template-columns:repeat(2,64px);flex:0 0 auto}
+.esc .g{margin-top:8px;color:var(--poor);font-size:15px;font-weight:600}
+.pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:14px;font-weight:700}
+.pill.g{background:var(--good-bg);color:var(--good)}
+.pill.f{background:var(--fair-bg);color:var(--fair)}
+.pill.p{background:var(--poor-bg);color:var(--poor)}
+.pill.n{background:var(--bg);color:var(--muted)}
+.attn{border:2px solid var(--poor);background:var(--poor-bg);border-radius:14px;padding:12px 14px;margin:0 0 12px}
+.attn h3{margin:0 0 6px;font-size:18px;color:var(--poor)}
+.attn ul{margin:0;padding-left:20px}
+.attn li{margin:4px 0}
+.warnbox{border:2px solid var(--fair);background:var(--fair-bg);border-radius:14px;padding:12px 14px;margin:0 0 12px}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score .big{font-size:38px;font-weight:800;line-height:1}
+.act{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.act:first-child{border-top:none;padding-top:0;margin-top:0}
+.notice{font-size:14px;color:var(--muted);margin:14px 0}
+.joblist .item{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:860px;border-radius:18px 18px 0 0;padding:16px;max-height:88vh;display:flex;flex-direction:column;gap:10px}
+.sheet textarea{flex:1;min-height:40vh;font-size:14px;font-family:ui-monospace,Menlo,monospace}
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--bg);border-top:1px solid var(--line);padding:8px 14px max(8px,env(safe-area-inset-bottom))}
+.navbar .in{max-width:860px;margin:0 auto;display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0 0}
+.modes button{min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
+.modes button.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.logoprev{display:flex;align-items:center;gap:14px}
+.logoprev svg,.logoprev img{width:72px;height:72px;object-fit:contain}
+.tag{display:inline-block;background:var(--fair-bg);color:var(--fair);border-radius:8px;padding:2px 8px;font-size:13px;font-weight:700}
+
+/* ---------- Report (always light, paper-style) ---------- */
+.report{background:#fff;color:#111;border-radius:6px;padding:28px;margin:14px 0;font-size:15px;line-height:1.5}
+.report h1{font-size:30px;margin:0 0 4px;color:#1d5946;line-height:1.15}
+.report h2{font-size:20px;margin:26px 0 8px;color:#1d5946;border-bottom:2px solid #1d5946;padding-bottom:4px}
+.report h3{font-size:16px;margin:16px 0 4px;color:#1d5946}
+.report p{margin:6px 0}
+.report table{width:100%;border-collapse:collapse;margin:8px 0}
+.report th,.report td{border:1px solid #c8d0cc;padding:7px 9px;text-align:left;vertical-align:top;font-size:14px}
+.report th{background:#eef3f0}
+.report .meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:14px}
+.report .attn{background:#fbe6e3;color:#111;border-color:#ae2a22}
+.report .attn h3{color:#ae2a22;margin-top:0}
+.report .pill.g{background:#e3f2e8;color:#1e6a3d}.report .pill.f{background:#fff2d9;color:#8a5200}.report .pill.p{background:#fbe6e3;color:#ae2a22}.report .pill.n{background:#eee;color:#555}
+.report .ph{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.report .ph img{width:170px;height:125px;object-fit:cover;border:1px solid #ccc;border-radius:4px}
+.report .small{font-size:12.5px;color:#444}
+.report .item-row{break-inside:avoid;margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid #e3e8e5}
+.report .why{color:#333}
+.report .todo{color:#1d5946;font-weight:600}
+.report .cover{display:flex;align-items:center;gap:16px;border-bottom:4px solid #1d5946;padding-bottom:14px;margin-bottom:14px}
+.report .cover svg,.report .cover img{width:86px;height:86px;object-fit:contain;flex:0 0 auto}
+.report .cover .co{font-size:15px;color:#333}
+.report .glance{display:grid;grid-template-columns:1fr;gap:10px}
+.report .box{border:1.5px solid #1d5946;border-radius:8px;padding:10px 14px;background:#f3f8f5}
+.report .box h3{margin-top:0}
+.report ol,.report ul{margin:6px 0;padding-left:22px}
+.report li{margin:3px 0}
+.report .chk{list-style:none;padding-left:0}
+.report .chk li::before{content:"\2610  ";}
+.report .cal{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.report .cal,.report .meta{grid-template-columns:1fr}}
+.report .pb{break-before:page}
+.report .foot{margin-top:24px;border-top:1px solid #c8d0cc;padding-top:8px}
+@media print{
+  body{background:#fff}
+  .chrome,.noprint,.navbar{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .report{margin:0;padding:0;border-radius:0}
+  .report .pb{break-before:page}
+}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:78px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:60;max-width:90vw;font-size:15px;box-shadow:0 4px 14px var(--shadow)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="chrome noprint" id="chrome"></div>
+<div class="wrap" id="main"></div>
+<div class="navbar noprint" id="nav" style="display:none"></div>
+
+<script>
+"use strict";
+/* ============ DATA ============ */
+const OPTS = {
+  propType:["Year-round home","Seasonal cottage","Multi-unit / condo","Commercial","Campground / other"],
+  roof:["Metal","Asphalt shingle","Clay / composite tile","Wood shake","Other / unsure"],
+  siding:["Vinyl","Fibre cement / stucco / brick","Wood / cedar","Other / unsure"],
+  deck:["No deck","Non-combustible / composite","Wood deck","Wood deck with open underside"],
+  slope:["Flat / gentle","Moderate","Steep (fire may run uphill toward the home)"],
+  woods:["Over 100 m","30 to 100 m","10 to 30 m","Under 10 m"],
+  ownerAuth:["Owner present / authorized","Tenant with owner's permission","Tenant, no owner permission","Unsure"],
+  burn:["Checked: no restriction","Checked: restrictions in effect","Checked: ban / woods closure","Not checked"]
+};
+const SECTIONS = [
+ {id:"z1",tab:"0–1.5 m",name:"Zone 1: 0 to 1.5 m",sub:"The non-combustible zone around the house and deck.",client:"Right against your house and deck. Keeping this strip free of anything that can burn is one of the most effective steps.",items:[
+  {id:"z1a",w:3,t:"Ground next to the foundation",h:"Gravel, pavers or bare soil is good. Mulch, wood chips, dry plants or lawn clippings against the wall is poor.",fix:"Remove combustible mulch and plants within 1.5 m of the walls; replace with gravel, pavers or bare soil.",why:"Embers can land in mulch and dry plants and smoulder right against the wall."},
+  {id:"z1b",w:1,t:"Combustibles against walls",h:"Firewood, planters, furniture, propane grills, trash bins, stacked lumber.",fix:"Move combustible items at least 1.5 m from the house walls.",why:"Items stacked against walls give embers something to ignite next to the house."},
+  {id:"z1c",w:3,t:"Under deck, porch and stairs",h:"Storage, dry leaves, open gaps where embers can collect.",fix:"Clear stored items and debris under the deck; enclose or screen the open underside with non-combustible material.",why:"Embers collect under decks and are hard to see; stored items and debris there can ignite the house from below."},
+  {id:"z1d",w:1,t:"Deck surface and debris",h:"Needles and leaves in the gaps, wood condition, items left on the deck.",fix:"Clean debris from the deck surface and gaps; keep the deck clear of combustible clutter.",why:"Leaves and needles in deck gaps can ignite from embers."},
+  {id:"z1e",w:3,t:"Roof covering and condition",h:"Metal, asphalt, clay or composite is better than wood shakes. Note curled, missing or damaged pieces.",fix:"Repair or replace damaged roofing; ask about a Class A rated covering if the roof is wood shake.",why:"The roof is one of the first places embers land, so the covering and its condition matter."},
+  {id:"z1f",w:1,t:"Gutters, valleys and roof debris",h:"Needles and leaves in gutters, valleys and around chimneys.",fix:"Clean gutters and roof valleys; consider non-combustible gutter guards.",why:"Dry leaves and needles in gutters and valleys can catch embers."},
+  {id:"z1g",w:3,t:"Vents and openings",h:"Attic, soffit, foundation and crawlspace vents. Look for missing or damaged screens where embers can enter. Confirm the current mesh specification in the FireSmart guide.",fix:"Screen or cover vents and openings with fine non-combustible mesh per the current FireSmart guide.",why:"Vents can let embers into attics and crawlspaces where they are hard to spot."},
+  {id:"z1h",w:1,t:"Siding, eaves and soffits",h:"Gaps, rot, wood siding close to the ground, open eaves.",fix:"Repair gaps and damage; keep siding clear of the ground and add non-combustible protection near grade.",why:"Gaps and untreated wood let embers and heat reach the structure."},
+  {id:"z1i",w:1,t:"Windows and doors",h:"Cracked glass, gaps, weatherstripping, wood trim condition.",fix:"Repair gaps and damaged seals; consider upgraded glazing when windows are replaced.",why:"Heat can crack glass, and gaps let embers in."},
+  {id:"z1j",w:1,t:"Fences and attachments touching the house",h:"A wood fence, trellis or lattice connected to the house acts like a fuse.",fix:"Replace the last 1.5 m of any fence connected to the house with non-combustible material, or leave a gap.",why:"A fence attached to the house can carry fire directly to the wall."}
+ ]},
+ {id:"z2",tab:"1.5–10 m",name:"Zone 1 to 10 m",sub:"Intermediate area around the structure.",client:"From the edge of Zone 1 out to about 10 m. The goal is to keep fuel low, spaced apart, and away from the house.",items:[
+  {id:"z2a",w:3,t:"Conifers within 10 m",h:"Spruce, fir, pine and cedar burn hot. Ideally none within 10 m of the home.",fix:"Remove or heavily limb conifers within 10 m of the house (arborist for large trees).",why:"Conifers burn hot and can throw embers; distance from the home lowers that risk."},
+  {id:"z2b",w:1,t:"Tree spacing",h:"About 3 m between crowns lowers the chance of fire moving tree to tree.",fix:"Thin trees so crowns are about 3 m apart.",why:"Space between tree crowns makes it harder for fire to move from tree to tree."},
+  {id:"z2c",w:3,t:"Branches over roof or near chimney",h:"Overhanging branches drop debris and carry fire to the roof.",fix:"Prune branches back from the roof and chimney (arborist if work is aloft).",why:"Branches over the roof drop fuel and can carry fire to the house."},
+  {id:"z2d",w:1,t:"Lower branches (limbing)",h:"Branches near the ground let a surface fire climb into the crown.",fix:"Limb lower branches up to a suitable height on retained trees.",why:"Low branches let a ground fire climb into the tree crown."},
+  {id:"z2e",w:1,t:"Shrubs and hedges near the structure",h:"Dense or dry shrubs, especially evergreen hedges, close to walls.",fix:"Remove or thin flammable shrubs near the structure; keep plants spaced and irrigated.",why:"Dense or dry shrubs near walls put fuel close to the house."},
+  {id:"z2f",w:1,t:"Sheds and outbuildings",h:"Distance from the house, materials, debris around them.",fix:"Clear combustibles around outbuildings and move them away from the house if possible.",why:"Outbuildings can ignite and expose the house to heat and embers."},
+  {id:"z2g",w:3,t:"Propane and fuel storage",h:"Tank location, clearance, vegetation around it. If you smell gas, stop and see Escalations.",fix:"Clear vegetation around tanks and follow supplier guidance on clearance.",why:"Fuel tanks near vegetation add risk; clearing around them helps."},
+  {id:"z2h",w:1,t:"Firewood pile location",h:"Ideally well away from the house and not under trees.",fix:"Relocate the woodpile away from the house and clear the area around it.",why:"A woodpile is a large amount of fuel; keep it away from the house."}
+ ]},
+ {id:"z3",tab:"10–30 m",name:"Zone 2: 10 to 30 m",sub:"Reduce fuel so fire stays low and slow.",client:"Further out. Thinning and clearing here helps keep a fire low and slower, which gives firefighters and your home a better chance.",items:[
+  {id:"z3a",w:3,t:"Ladder fuels and understory",h:"Shrubs, young trees and hanging branches that connect ground fuels to tree crowns.",fix:"Remove ladder fuels and thin understory.",why:"Ladder fuels help a surface fire reach the treetops, where it spreads faster."},
+  {id:"z3b",w:1,t:"Dead and downed material",h:"Dead standing trees, fallen trees, branch piles, slash.",fix:"Remove dead and downed material; chip or haul away.",why:"Dead and fallen material dries out and burns easily."},
+  {id:"z3c",w:1,t:"Grass and ground cover height",h:"Tall dry grass and weeds carry fast surface fire.",fix:"Mow grass and weeds short and keep them green or cut.",why:"Tall dry grass carries fast-moving surface fire."},
+  {id:"z3d",w:1,t:"Debris and storage piles",h:"Lumber, brush, old vehicles, equipment.",fix:"Consolidate or remove piles and stored materials away from the home.",why:"Piles of brush, lumber or stored items add fuel."}
+ ]},
+ {id:"z4",tab:"30–100 m",name:"Zone 3: 30 to 100 m and beyond",sub:"The landscape around the property.",client:"The wider surroundings. You may not control all of it, but it shapes how fire could approach.",items:[
+  {id:"z4a",w:3,t:"Continuous forest next to the property",h:"Unbroken woods, especially conifer, running up to the lot.",fix:"Talk with neighbours and your municipality about a neighbourhood fuel break, and ask about local FireSmart programs.",why:"Continuous forest up to the lot lets fire approach without a break."},
+  {id:"z4b",w:1,t:"Neighbouring structures and hazards",h:"Nearby unkept properties, sheds, vehicle storage.",fix:"Talk with neighbours about shared risks; consider a neighbourhood approach.",why:"Risk is shared; neighbouring conditions affect your property."},
+  {id:"z4c",w:1,t:"Water sources nearby",h:"Pond, lake, hydrant, cistern. Note distance.",fix:"Know where your nearest water source is and how you could reach it with a hose or pump.",why:"Knowing where water is helps firefighters and your own preparation."}
+ ]},
+ {id:"ac",tab:"Access",name:"Access and readiness",sub:"Can help arrive, and can the household get out?",client:"Getting help in and getting your household out safely.",items:[
+  {id:"aca",w:3,t:"Driveway width and overhead clearance",h:"Clear route for emergency vehicles, branches trimmed back, gates wide enough.",fix:"Widen and trim the access route so emergency vehicles can pass.",why:"Emergency vehicles need a clear, wide route in."},
+  {id:"acb",w:1,t:"Turnaround space",h:"Space at the end of a long driveway to turn around.",fix:"Create or mark a turnaround area.",why:"A turnaround helps fire trucks leave safely."},
+  {id:"acc",w:1,t:"Civic number visible from the road",h:"Reflective, readable from both directions.",fix:"Install a clear, reflective civic number at the road.",why:"Responders need to find your address quickly."},
+  {id:"acd",w:1,t:"Water and hose access",h:"Working hose reaching all sides of the home.",fix:"Add or repair hose access.",why:"A working hose helps with small spot fires and wetting down."},
+  {id:"ace",w:3,t:"Evacuation plan and go-bag discussed",h:"Two exit routes, meeting place, pets, documents.",fix:"Write a simple evacuation plan and pack a go-bag.",why:"A plan made before an emergency saves time when it counts."}
+ ]}
+];
+const ESC = [
+ {id:"e1",t:"Overhead power lines in or near trees",g:"Do not work near lines. Contact the utility. Human decision required before any tree work."},
+ {id:"e2",t:"Dead, leaning or hazardous trees near the structure",g:"Refer to a qualified arborist. Do not fell without proper training and insurance."},
+ {id:"e3",t:"Smell of gas or damaged fuel tank or line",g:"Stop. Move away. Tell the client to call the fuel supplier or 911. Do not continue the visit near the tank."},
+ {id:"e4",t:"Structural damage, rot, or unsafe deck or roof",g:"Recommend a qualified contractor. Do not climb or stand on unsafe structures."},
+ {id:"e5",t:"Recommended work falls on a neighbour's or Crown land",g:"Written permission or authority approval needed. Human decision required."},
+ {id:"e6",t:"Watercourse, wetland or protected area nearby",g:"Check with the municipality and province before any clearing. Rules were not verified for this template."},
+ {id:"e7",t:"Person present is a tenant without owner permission",g:"Do not book work without the owner's authorization."},
+ {id:"e8",t:"Client asks for a guarantee or an insurance promise",g:"Do not promise outcomes. Refer them to their insurer. Review wording with the owner."},
+ {id:"e9",t:"Burn ban or woods closure is in effect today",g:"Confirm whether field work can proceed. Human decision required."},
+ {id:"e10",t:"Personal safety concern (aggressive dog, hostile person, unsafe site)",g:"Leave the site. Record what happened for the owner."},
+ {id:"e11",t:"Anything outside your training or scope",g:"Escalate to the owner or a qualified professional before advising."},
+ {id:"e12",t:"Smoke or active fire",g:"Call 911 immediately and leave."}
+];
+const CTX_FIELDS = [["propType","Property type"],["roof","Roof covering"],["siding","Main siding"],["deck","Deck"],["slope","Slope"],["woods","Distance to continuous woods"]];
+const TABS = [{id:"info",label:"Info"}].concat(SECTIONS.map(s=>({id:s.id,label:s.tab,sec:s})),[{id:"esc",label:"Escalate"},{id:"plan",label:"Summary"}]);
+const RLABEL = {g:"Good",f:"Fair",p:"Poor",n:"N/A"};
+const CLABEL = {g:"In good shape",f:"Could be improved",p:"Needs attention",n:"Not applicable"};
+const PRIOS = ["High","Medium","Low"];
+const COSTS = ["","Under $100","$100–500","$500–2,000","Over $2,000","Needs quote"];
+const EFFORT = ["Homeowner","Pro / crew","Arborist","Other"];
+const LEVEL_TEXT = {
+  "Low":"Your property has few of the common conditions that let embers and fire reach a home. Keep up the seasonal checks in this plan.",
+  "Moderate":"Your property has some strengths and some gaps. Finishing the high-priority actions will make the biggest difference.",
+  "High":"Several conditions around your home could let embers or fire reach it. Start with the first steps below.",
+  "Extreme":"Many conditions around your home could let embers or fire reach it. We recommend acting on the first steps as soon as you can and talking with us about a plan.",
+  "Not enough data":"This assessment is not complete yet."
+};
+
+/* ============ STORAGE ============ */
+const DB = {
+  db:null, mem:new Map(), ok:false,
+  async init(){
+    try{
+      this.db = await new Promise((res,rej)=>{
+        const r = indexedDB.open("awm-assess",1);
+        r.onupgradeneeded=()=>r.result.createObjectStore("jobs",{keyPath:"id"});
+        r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+      });
+      this.ok = true;
+    }catch(e){ this.db=null; this.ok=false; }
+  },
+  store(mode){ return this.db.transaction("jobs",mode).objectStore("jobs"); },
+  all(){
+    if(!this.db) return Promise.resolve([...this.mem.values()]);
+    return new Promise(res=>{ try{ const q=this.store("readonly").getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>res([]); }catch(e){res([]);} });
+  },
+  put(j){
+    if(!this.db){ this.mem.set(j.id,j); return Promise.resolve(); }
+    return new Promise(res=>{ try{ const q=this.store("readwrite").put(j); q.onsuccess=()=>res(); q.onerror=()=>res(); }catch(e){res();} });
+  },
+  del(id){
+    if(!this.db){ this.mem.delete(id); return Promise.resolve(); }
+    return new Promise(res=>{ try{ const q=this.store("readwrite").delete(id); q.onsuccess=()=>res(); q.onerror=()=>res(); }catch(e){res();} });
+  }
+};
+const DEFAULT_SETTINGS = {company:"Atlantic Wildfire Mitigation & Co",tagline:"Property wildfire readiness",phone:"",email:"",web:"",logo:""};
+let settings = Object.assign({},DEFAULT_SETTINGS);
+function loadSettings(){ try{ const s=localStorage.getItem("awm-settings"); if(s) settings=Object.assign({},DEFAULT_SETTINGS,JSON.parse(s)); }catch(e){} }
+function saveSettings(){ try{ localStorage.setItem("awm-settings",JSON.stringify(settings)); }catch(e){} }
+
+/* ============ HELPERS ============ */
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  for(const k in (attrs||{})){
+    const v = attrs[k];
+    if(k==="class") el.className=v;
+    else if(k.startsWith("on")) el.addEventListener(k.slice(2),v);
+    else if(v!==false && v!==null && v!==undefined) el.setAttribute(k,v===true?"":v);
+  }
+  kids.flat().forEach(c=>{ if(c===null||c===undefined||c===false) return; el.append(c.nodeType?c:document.createTextNode(String(c))); });
+  return el;
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function nl(s){ return esc(s).replace(/\n/g,"<br>"); }
+let dl=null;
+function toast(msg){ const t=h("div",{class:"toast noprint",role:"status"},msg); document.body.append(t); setTimeout(()=>t.remove(),4500); }
+function slug(x){ return String(x||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||"client"; }
+async function saveFile(filename,data){
+  const type=filename.endsWith(".json")?"application/json":filename.endsWith(".html")?"text/html":"text/plain";
+  if(dl){
+    try{ await dl.save({filename,data}); toast("Saved."); }
+    catch(e){ const c=e&&e.code; toast(c==="declined"?"Save cancelled.":"Could not save ("+(c||"error")+"). Use Text version instead."); }
+    return;
+  }
+  const blob=new Blob([data],{type});
+  try{
+    const file=new File([blob],filename,{type});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:filename}); toast("Shared."); return; }
+  }catch(e){ if(e&&e.name==="AbortError"){ toast("Save cancelled."); return; } }
+  try{
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; document.body.append(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },3000); toast("Downloaded. Check your Files or Downloads.");
+  }catch(e){ toast("Could not save. Use Text version instead."); }
+}
+function exportDoc(bodyHTML,title){
+  const css=document.querySelector("style").textContent;
+  return "<!DOCTYPE html><html lang=\"en\" data-theme=\"light\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>"+esc(title)+"</title><style>"+css+
+  "\nbody{background:#fff}.wrap{padding-bottom:20px}.printbar{padding:12px 0}.printbar button{min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid #1d5946;background:#1d5946;color:#fff;font-weight:600;font-size:16px}</style></head><body><div class=\"wrap\"><div class=\"printbar noprint\"><button onclick=\"window.print()\">Print or save as PDF</button></div><div class=\"report\">"+bodyHTML+"</div></div></body></html>";
+}
+function saveBackup(list){
+  const payload=JSON.stringify({app:"awm-assess",version:1,saved:new Date().toISOString(),settings:settings,jobs:list});
+  saveFile("awm-backup-"+today()+".json",payload);
+}
+async function restoreBackup(file){
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data||data.app!=="awm-assess"||!Array.isArray(data.jobs)) throw new Error("bad");
+    let n=0;
+    for(const j of data.jobs){ if(j&&j.id&&j.info&&j.answers){ if(!j.actions)j.actions=[]; await DB.put(j); n++; } }
+    if(data.settings&&!settings.logo&&data.settings.logo){ settings.logo=data.settings.logo; saveSettings(); }
+    jobs=await DB.all(); render(); toast("Restored "+n+" assessment"+(n===1?"":"s")+".");
+  }catch(e){ toast("That file isn't a valid backup."); }
+}
+function today(){ try{ return new Date().toLocaleDateString("en-CA"); }catch(e){ return new Date().toISOString().slice(0,10); } }
+function allItems(){ const out=[]; SECTIONS.forEach(s=>s.items.forEach(it=>out.push({it,s}))); return out; }
+function newJob(){
+  return {id:uid(),created:Date.now(),updated:Date.now(),
+    info:{client:"",phone:"",email:"",address:"",pid:"",assessor:"",date:today(),weather:"",ownerAuth:OPTS.ownerAuth[0],burn:OPTS.burn[3],
+      propType:"",roof:"",siding:"",deck:"",slope:"",woods:"",notes:""},
+    answers:{},esc:{},escNotes:{},actions:[],summary:""};
+}
+function ans(id){ return job.answers[id] || (job.answers[id]={r:"",note:"",photos:[],flag:false}); }
+const SVG_LOGO = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder logo"><circle cx="32" cy="32" r="30" fill="#1d5946"/><path d="M32 10c2 9 11 13 11 24a11 11 0 0 1-22 0c0-6 3-9 6-13 1 3 3 5 4 5-1-6-1-11 1-16z" fill="#ffffff"/><path d="M32 39c1 3 4 5 4 8a4 4 0 0 1-8 0c0-3 3-5 4-8z" fill="#e8a33d"/></svg>';
+function logoHTML(){ return settings.logo?`<img src="${esc(settings.logo)}" alt="${esc(settings.company)} logo">`:SVG_LOGO; }
+function logoEl(){ const d=h("span",{style:"display:contents"}); d.innerHTML=logoHTML(); return d; }
+function readImage(file,max,type,q){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const sc=Math.min(1,max/Math.max(img.width,img.height));
+        const w=Math.round(img.width*sc), hh=Math.round(img.height*sc);
+        const c=document.createElement("canvas"); c.width=w; c.height=hh;
+        c.getContext("2d").drawImage(img,0,0,w,hh);
+        res(c.toDataURL(type,q));
+      };
+      img.onerror=rej; img.src=fr.result;
+    };
+    fr.onerror=rej; fr.readAsDataURL(file);
+  });
+}
+
+/* ============ SCORING AND FLAGS ============ */
+function computeResult(j){
+  let got=0,tot=0,rated=0,required=0,unanswered=0;
+  const flags=[];
+  allItems().forEach(({it,s})=>{
+    const a=j.answers[it.id]||{};
+    required++;
+    if(!a.r){ unanswered++; }
+    if(a.r==="g"||a.r==="f"||a.r==="p"){
+      rated++; const pts=a.r==="g"?100:a.r==="f"?50:0;
+      got+=pts*it.w; tot+=100*it.w;
+    }
+    if(a.r==="p"&&it.w===3) flags.push({kind:"Priority item rated Poor",text:it.t,sec:s.name,note:a.note});
+    if(a.flag) flags.push({kind:"Flagged for human review",text:it.t,sec:s.name,note:a.note});
+  });
+  ESC.forEach(e=>{ if(j.esc[e.id]) flags.push({kind:"Escalation",text:e.t,extra:e.g,note:j.escNotes[e.id]||""}); });
+  if(j.info.ownerAuth!==OPTS.ownerAuth[0]) flags.push({kind:"Authorization",text:"Owner authorization: "+j.info.ownerAuth,extra:"Confirm owner permission before quoting or working."});
+  if(j.info.burn===OPTS.burn[2]||j.info.burn===OPTS.burn[3]) flags.push({kind:"Burn status",text:"Burn map status: "+j.info.burn,extra:"Check the provincial burn map and any woods-access restriction."});
+  const pct = tot? Math.round(got/tot*100):null;
+  let level = pct===null?"Not enough data":pct>=80?"Low":pct>=60?"Moderate":pct>=40?"High":"Extreme";
+  const critPoor = flags.some(f=>f.kind==="Priority item rated Poor");
+  const order=["Low","Moderate","High","Extreme"];
+  if(critPoor && level!=="Not enough data" && order.indexOf(level)<2) level="High";
+  return {pct,level,rated,required,unanswered,flags,critPoor};
+}
+function levelClass(l){ return l==="Low"?"g":l==="Moderate"?"f":l==="Not enough data"?"n":"p"; }
+
+/* ============ STATE ============ */
+let job=null, jobs=[], tab="info", view="jobs", reportMode="client", saveTimer=null, scrollTarget=null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{ if(!job) return; job.updated=Date.now(); await DB.put(job); },350);
+}
+function go(v,t){ if(v) view=v; if(t) tab=t; render(); window.scrollTo(0,0); }
+
+/* ============ CHROME ============ */
+function brandBox(sub){
+  return h("div",{class:"brandbox"},logoEl(),h("div",{class:"t"},h("b",{},settings.company||"Your company"),h("span",{},sub)));
+}
+function renderChrome(){
+  const c=$("#chrome"); c.textContent="";
+  const wrap=h("div",{class:"wrap"});
+  const bar=h("div",{class:"bar"});
+  if(view==="jobs"){
+    bar.append(brandBox(settings.tagline||"Property assessment"));
+    bar.append(h("button",{class:"btn small",onclick:()=>go("settings")},"Settings"),h("button",{class:"btn small solid",onclick:startNew},"New"));
+  } else if(view==="settings"){
+    bar.append(brandBox("Settings"));
+    bar.append(h("button",{class:"btn small",onclick:goJobs},"Done"));
+  } else {
+    bar.append(brandBox(job&&job.info.client?job.info.client:"Unnamed client"));
+    bar.append(h("button",{class:"btn small",onclick:goJobs},"All jobs"));
+    if(view==="form") bar.append(h("button",{class:"btn small solid",onclick:()=>go("report")},"Report"));
+    if(view==="report") bar.append(h("button",{class:"btn small solid",onclick:()=>go("form")},"Edit"));
+  }
+  wrap.append(bar);
+  if(view==="form"){
+    const res=computeResult(job);
+    wrap.append(h("div",{class:"prog","aria-label":"Items rated"},h("i",{style:"width:"+Math.round(res.rated/res.required*100)+"%"})));
+    const tabs=h("div",{class:"tabs"});
+    TABS.forEach(t=>{
+      let sm="", alert=false;
+      if(t.sec){
+        const done=t.sec.items.filter(i=>(job.answers[i.id]||{}).r).length;
+        sm=done+"/"+t.sec.items.length;
+        alert=t.sec.items.some(i=>{const a=job.answers[i.id]||{};return a.flag||(a.r==="p"&&i.w===3);});
+      } else if(t.id==="esc"){
+        const n=ESC.filter(e=>job.esc[e.id]).length; sm=n?n+" flagged":"none"; alert=n>0;
+      } else if(t.id==="plan"){
+        sm=res.flags.length?res.flags.length+" flags":""; alert=res.flags.length>0;
+      }
+      tabs.append(h("button",{class:"tab"+(tab===t.id?" on":"")+(alert&&tab!==t.id?" alert":""),onclick:()=>go(null,t.id)},t.label,sm?h("small",{},sm):null));
+    });
+    wrap.append(tabs);
+  }
+  c.append(wrap);
+}
+function refreshChrome(){ if(view==="form") renderChrome(); }
+function renderNav(){
+  const n=$("#nav"); n.textContent="";
+  if(view!=="form"){ n.style.display="none"; return; }
+  n.style.display="block";
+  const idx=TABS.findIndex(t=>t.id===tab);
+  const prev=idx>0?TABS[idx-1]:null, next=idx<TABS.length-1?TABS[idx+1]:null;
+  n.append(h("div",{class:"in"},
+    prev?h("button",{class:"btn",onclick:()=>go(null,prev.id)},"Back"):h("span"),
+    next?h("button",{class:"btn solid",onclick:()=>go(null,next.id)},"Next: "+next.label):h("button",{class:"btn solid",onclick:()=>go("report")},"Preview report")));
+}
+
+/* ============ VIEWS ============ */
+function render(){
+  renderChrome(); renderNav();
+  const m=$("#main"); m.textContent="";
+  if(view==="jobs") renderJobs(m);
+  else if(view==="settings") renderSettings(m);
+  else if(view==="form") renderForm(m);
+  else renderReport(m);
+  if(scrollTarget){ const el=document.getElementById(scrollTarget); scrollTarget=null; if(el) setTimeout(()=>el.scrollIntoView({block:"center"}),30); }
+}
+async function goJobs(){ if(job) await DB.put(job); jobs=await DB.all(); job=null; go("jobs"); }
+function startNew(){ job=newJob(); DB.put(job); go("form","info"); }
+
+function renderJobs(m){
+  m.append(h("h2",{},"Assessments"));
+  m.append(h("p",{class:"sub"},"Saved on this device. Tap New to start a site visit."));
+  if(!DB.ok) m.append(h("div",{class:"attn"},h("h3",{},"Storage unavailable"),h("div",{},"Work is kept in memory only and will be lost if you close this page. Use Text version in the report to copy your notes out.")));
+  const list=h("div",{class:"joblist"});
+  const sorted=[...jobs].sort((a,b)=>b.updated-a.updated);
+  if(!sorted.length) list.append(h("div",{class:"card"},"No assessments yet."));
+  sorted.forEach(j=>{
+    const r=computeResult(j);
+    const del=h("button",{class:"btn small warn"},"Delete");
+    let armed=false;
+    del.addEventListener("click",async()=>{
+      if(!armed){ armed=true; del.textContent="Tap again to delete"; setTimeout(()=>{armed=false;del.textContent="Delete";},3000); return; }
+      await DB.del(j.id); jobs=await DB.all(); render();
+    });
+    list.append(h("div",{class:"item"},
+      h("div",{},h("div",{class:"ttl"},j.info.client||"Unnamed client"),
+        h("div",{class:"hint",style:"margin:0"},(j.info.address||"No address")+" · "+(j.info.date||"")),
+        h("span",{class:"pill "+levelClass(r.level)},r.level==="Not enough data"?"In progress":"Attention: "+r.level)),
+      h("div",{class:"row",style:"margin:0"},
+        h("button",{class:"btn small solid",onclick:()=>{job=j; if(!job.actions)job.actions=[]; go("form","info");}},"Open"),del)));
+  });
+  m.append(list);
+  const rf=h("input",{type:"file",accept:".json,application/json",style:"display:none",onchange:async e=>{ const f=e.target.files[0]; e.target.value=""; if(f) await restoreBackup(f); }});
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Backup"),h("div",{class:"hint"},"Save a copy of all assessments and settings, or restore from one. Do this after every job."),
+    h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>saveBackup(jobs)},"Save backup"),h("button",{class:"btn small",onclick:()=>rf.click()},"Restore backup"),rf)));
+  m.append(h("p",{class:"notice"},"Draft checklist based on general FireSmart concepts. It is not an official FireSmart form. Check details against the current FireSmart Canada guides before use."));
+}
+
+function renderSettings(m){
+  m.append(h("h2",{},"Company settings"),h("p",{class:"sub"},"These appear on your client report."));
+  const prev=h("div",{class:"logoprev"});
+  function drawPrev(){ prev.textContent=""; const s=h("span",{style:"display:contents"}); s.innerHTML=logoHTML(); prev.append(s,h("div",{},settings.logo?h("div",{class:"hint",style:"margin:0"},"Your logo"):h("span",{class:"tag"},"Placeholder logo"),h("div",{class:"hint",style:"margin:4px 0 0"},settings.logo?"Shown on the client report.":"Replace it with your real logo when you have one."))); }
+  drawPrev();
+  const fi=h("input",{type:"file",accept:"image/*",style:"display:none",onchange:async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ settings.logo=await readImage(f,400,"image/png"); saveSettings(); drawPrev(); renderChrome(); }catch(err){}
+    e.target.value="";
+  }});
+  const sf=(l,k,type)=>h("label",{class:"f"},h("span",{},l),h("input",{type:type||"text",value:settings[k]||"",oninput:e=>{settings[k]=e.target.value;saveSettings();}}));
+  m.append(h("div",{class:"card"},prev,h("div",{class:"row"},
+    h("button",{class:"btn small",onclick:()=>fi.click()},"Upload logo"),
+    settings.logo?h("button",{class:"btn small warn",onclick:()=>{settings.logo="";saveSettings();render();}},"Use placeholder"):null,fi)));
+  m.append(h("div",{class:"card"},sf("Company name","company"),sf("Tagline","tagline"),
+    h("div",{class:"grid2"},sf("Phone","phone","tel"),sf("Email","email","email")),sf("Website","web","url")));
+  m.append(h("p",{class:"notice"},"Settings are saved on this device only."));
+}
+
+function field(label,key,type,opts){
+  const inf=job.info;
+  let input;
+  if(opts){
+    input=h("select",{onchange:e=>{inf[key]=e.target.value;save();refreshChrome();}},
+      h("option",{value:""},"Select…"),
+      opts.map(o=>h("option",{value:o,selected:inf[key]===o},o)));
+  } else {
+    input=h("input",{type:type||"text",value:inf[key]||"",oninput:e=>{inf[key]=e.target.value;save();}});
+  }
+  return h("label",{class:"f"},h("span",{},label),input);
+}
+
+function renderForm(m){
+  if(tab==="info") return renderInfo(m);
+  if(tab==="esc") return renderEsc(m);
+  if(tab==="plan") return renderPlan(m);
+  const s=SECTIONS.find(x=>x.id===tab);
+  m.append(h("h2",{},s.name),h("p",{class:"sub"},s.sub));
+  const rest=h("button",{class:"btn small",style:"margin-bottom:12px"},"Mark all blank items Good");
+  let armed=false;
+  rest.addEventListener("click",()=>{
+    if(!armed){ armed=true; rest.textContent="Tap again to confirm"; setTimeout(()=>{armed=false;rest.textContent="Mark all blank items Good";},3000); return; }
+    s.items.forEach(it=>{ const a=ans(it.id); if(!a.r) a.r="g"; });
+    save(); render();
+  });
+  m.append(rest);
+  s.items.forEach(it=>m.append(itemCard(it)));
+}
+
+function renderInfo(m){
+  m.append(h("h2",{},"Visit details"));
+  m.append(h("div",{class:"card"},
+    h("div",{class:"grid2"},field("Client name","client"),field("Phone","phone","tel"),field("Email","email","email"),field("Assessor","assessor")),
+    field("Property address","address"),
+    h("div",{class:"grid2"},field("PID (if known)","pid"),field("Date","date","date"),field("Weather at visit","weather"))));
+  m.append(h("div",{class:"card"},
+    h("div",{class:"grid2"},field("Who is present","ownerAuth",null,OPTS.ownerAuth),field("Burn map status today","burn",null,OPTS.burn))));
+  m.append(h("h2",{},"Property basics"));
+  const g=h("div",{class:"card"},h("div",{class:"grid2"}));
+  CTX_FIELDS.forEach(([k,l])=>g.firstChild.append(field(l,k,null,OPTS[k])));
+  m.append(g);
+  m.append(h("div",{class:"card"},h("label",{class:"f"},h("span",{},"General notes"),h("textarea",{oninput:e=>{job.info.notes=e.target.value;save();}},job.info.notes||""))));
+}
+
+function itemCard(it){
+  const a=ans(it.id);
+  const card=h("div",{class:"item"+(it.w===3?" crit":"")+(a.flag?" flagged":""),id:"item-"+it.id});
+  const seg=h("div",{class:"seg"});
+  ["g","f","p","n"].forEach(r=>{
+    seg.append(h("button",{"data-r":r,class:a.r===r?"on":"",onclick:()=>{
+      a.r=a.r===r?"":r;
+      seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.r===a.r));
+      save(); refreshChrome();
+    }},RLABEL[r]));
+  });
+  const thumbs=h("div",{class:"thumbs"});
+  function drawThumbs(){
+    thumbs.textContent="";
+    a.photos.forEach((p,i)=>{
+      thumbs.append(h("div",{class:"thumb"},h("img",{src:p,alt:"Photo "+(i+1)+" for "+it.t}),
+        h("button",{"aria-label":"Remove photo",onclick:()=>{a.photos.splice(i,1);drawThumbs();save();}},"×")));
+    });
+  }
+  drawThumbs();
+  const fileIn=h("input",{type:"file",accept:"image/*",multiple:true,style:"display:none",onchange:async e=>{
+    for(const f of e.target.files){ try{ a.photos.push(await readImage(f,1280,"image/jpeg",0.72)); }catch(err){} }
+    e.target.value=""; drawThumbs(); save();
+  }});
+  const flagBtn=h("button",{class:"flagbtn"+(a.flag?" on":""),onclick:()=>{
+    a.flag=!a.flag; flagBtn.classList.toggle("on",a.flag); flagBtn.textContent=a.flag?"Flagged for review":"Flag for review";
+    card.classList.toggle("flagged",a.flag); save(); refreshChrome();
+  }},a.flag?"Flagged for review":"Flag for review");
+  const note=h("textarea",{placeholder:"Notes (what you saw)",oninput:e=>{a.note=e.target.value;save();}},a.note||"");
+  const noteWrap=h("div",{style:a.note?"":"display:none"},note);
+  const noteBtn=h("button",{class:"btn small",onclick:()=>{ noteWrap.style.display="block"; note.focus(); noteBtn.style.display="none"; }},"Add note");
+  if(a.note) noteBtn.style.display="none";
+  card.append(h("div",{class:"ttl"},it.t),h("div",{class:"hint"},it.h),seg,noteWrap,
+    h("div",{class:"row"},noteBtn,h("button",{class:"btn small",onclick:()=>fileIn.click()},"Add photo"),flagBtn,fileIn),thumbs);
+  return card;
+}
+
+function renderEsc(m){
+  m.append(h("h2",{},"Escalation checks"),h("p",{class:"sub"},"Mark Yes for anything that needs the owner or a qualified professional to decide. Yes items appear at the top of the summary and the internal report."));
+  ESC.forEach(e=>{
+    const yes=!!job.esc[e.id];
+    const g=h("div",{class:"g"},e.g); g.style.display=yes?"block":"none";
+    const seg=h("div",{class:"seg"});
+    const by=h("button",{"data-r":"p",class:yes?"on":"",onclick:()=>{job.esc[e.id]=true;by.classList.add("on");bn.classList.remove("on");g.style.display="block";card.classList.add("flagged");save();refreshChrome();}},"Yes");
+    const bn=h("button",{"data-r":"g",class:!yes?"on":"",onclick:()=>{job.esc[e.id]=false;bn.classList.add("on");by.classList.remove("on");g.style.display="none";card.classList.remove("flagged");save();refreshChrome();}},"No");
+    seg.append(by,bn);
+    const card=h("div",{class:"item"+(yes?" flagged":"")},
+      h("div",{class:"esc"},h("div",{style:"flex:1"},h("div",{class:"ttl"},e.t),g),seg),
+      h("textarea",{placeholder:"Details (optional)",oninput:ev=>{job.escNotes[e.id]=ev.target.value;save();}},job.escNotes[e.id]||""));
+    m.append(card);
+  });
+}
+
+function syncActions(){
+  const wanted=[];
+  allItems().forEach(({it,s})=>{ const a=job.answers[it.id]; if(a&&(a.r==="p"||a.r==="f")) wanted.push({it,s,a}); });
+  const keep=job.actions.filter(x=>!x.auto||wanted.some(w=>w.it.id===x.itemId));
+  wanted.forEach(({it,s,a})=>{
+    if(!keep.some(x=>x.auto&&x.itemId===it.id)) keep.push({id:uid(),auto:true,itemId:it.id,sec:s.name,text:it.fix,effort:it.w===3?"Pro / crew":"Homeowner",cost:"",prio:a.r==="p"?"High":"Medium"});
+  });
+  job.actions=keep;
+}
+function attnBox(res){
+  if(!res.flags.length) return null;
+  const ul=h("ul");
+  res.flags.forEach(f=>ul.append(h("li",{},h("strong",{},f.kind+": "),f.text,f.extra?" — "+f.extra:"",f.note?" (Note: "+f.note+")":"")));
+  return h("div",{class:"attn"},h("h3",{},"Needs human attention ("+res.flags.length+")"),ul);
+}
+function firstBlank(){
+  for(const s of SECTIONS){ for(const it of s.items){ if(!(job.answers[it.id]||{}).r) return {s,it}; } }
+  return null;
+}
+function renderPlan(m){
+  syncActions(); save();
+  const res=computeResult(job);
+  m.append(h("h2",{},"Summary"));
+  if(res.unanswered){
+    m.append(h("div",{class:"warnbox"},h("strong",{},res.unanswered+" items not rated. "),"Unrated items are left out of the client report.",
+      h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>{const b=firstBlank(); if(b){scrollTarget="item-"+b.it.id; go(null,b.s.id);} }},"Go to first blank item"))));
+  }
+  const box=attnBox(res); if(box) m.append(box);
+  m.append(h("div",{class:"card"},
+    h("div",{class:"score"},
+      h("div",{class:"big"},res.pct===null?"–":res.pct+"%"),
+      h("div",{},h("div",{},h("span",{class:"pill "+levelClass(res.level)},res.level==="Not enough data"?"Not enough data":"Attention level: "+res.level)),
+        h("div",{class:"hint",style:"margin:4px 0 0"},res.rated+" of "+res.required+" items rated"))),
+    h("p",{class:"notice",style:"margin-bottom:0"},"Condition score: higher is better. Levels use a draft rubric (Low 80+, Moderate 60–79, High 40–59, Extreme under 40; any priority item rated Poor lifts the level to at least High). Set your own rubric before using this with clients.")));
+  m.append(h("div",{class:"card"},h("label",{class:"f"},h("span",{},"Your summary for the client"),h("textarea",{placeholder:"A short personal note: overall impression and the top things to do first. This appears on the client report.",oninput:e=>{job.summary=e.target.value;save();}},job.summary||""))));
+  m.append(h("h2",{},"Action plan"),h("p",{class:"sub"},"Built from items rated Fair or Poor. Edit, add or remove. This goes to the client."));
+  const list=h("div",{class:"card"});
+  function drawActs(){
+    list.textContent="";
+    if(!job.actions.length) list.append(h("div",{class:"hint"},"No actions yet. Rate items Fair or Poor, or add one."));
+    const ord=[...job.actions].sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio));
+    ord.forEach(a=>{
+      const sel=(arr,key)=>h("select",{onchange:e=>{a[key]=e.target.value;save();}},arr.map(o=>h("option",{value:o,selected:a[key]===o},o||"Cost band")));
+      list.append(h("div",{class:"act"},
+        a.sec?h("div",{class:"hint",style:"margin:0 0 4px"},a.sec):null,
+        h("textarea",{style:"margin-top:0",oninput:e=>{a.text=e.target.value;save();}},a.text),
+        h("div",{class:"grid2",style:"margin-top:8px"},sel(PRIOS,"prio"),sel(EFFORT,"effort")),
+        h("div",{class:"grid2",style:"margin-top:8px"},sel(COSTS,"cost"),
+          h("button",{class:"btn small warn",onclick:()=>{job.actions=job.actions.filter(x=>x.id!==a.id);drawActs();save();}},"Remove"))));
+    });
+  }
+  drawActs();
+  m.append(list);
+  m.append(h("button",{class:"btn block",onclick:()=>{job.actions.push({id:uid(),auto:false,sec:"",text:"",effort:"Homeowner",cost:"",prio:"Medium"});drawActs();save();}},"Add action"));
+}
+
+/* ============ REPORTS ============ */
+function contactLine(){
+  const p=[]; if(settings.phone)p.push(esc(settings.phone)); if(settings.email)p.push(esc(settings.email)); if(settings.web)p.push(esc(settings.web));
+  return p.join(" &nbsp;|&nbsp; ");
+}
+function sortedActions(j){ return [...(j.actions||[])].filter(a=>a.text).sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio)); }
+function photoCount(j){ let n=0; Object.values(j.answers).forEach(a=>{n+=(a.photos||[]).length;}); return n; }
+
+function clientReportHTML(j){
+  const res=computeResult(j), inf=j.info, acts=sortedActions(j);
+  const co=esc(settings.company||"Your company");
+  let o=`<div class="cover">${logoHTML()}<div><h1>Wildfire Readiness Plan</h1><div class="co">${co}${settings.tagline?" · "+esc(settings.tagline):""}</div></div></div>`;
+  o+=`<div class="meta"><div><strong>Prepared for:</strong> ${esc(inf.client)||"—"}</div><div><strong>Property:</strong> ${esc(inf.address)||"—"}</div><div><strong>Visit date:</strong> ${esc(inf.date)}</div><div><strong>Assessor:</strong> ${esc(inf.assessor)||"—"}</div></div>`;
+  o+=`<h2>Your results at a glance</h2><div class="glance"><div class="box"><h3>Attention level: ${res.level==="Not enough data"?"Incomplete":esc(res.level)}</h3><p>${esc(LEVEL_TEXT[res.level])}</p></div>`;
+  if(j.summary) o+=`<div class="box"><h3>A note from your assessor</h3><p>${nl(j.summary)}</p></div>`;
+  const top=acts.slice(0,3);
+  if(top.length) o+=`<div class="box"><h3>Start here: your first steps</h3><ol>${top.map(a=>`<li>${esc(a.text)}</li>`).join("")}</ol></div>`;
+  o+=`</div>`;
+  o+=`<p class="small">Attention level is a summary of what we saw on the day of the visit. It is a planning tool, not a guarantee, and it is not an insurance rating.</p>`;
+
+  o+=`<h2>How to read this plan</h2><p>Wildfire risk around a home is easier to manage when you think in zones, working outward from the house:</p><table><tr><th>Zone</th><th>What it means</th></tr>`+SECTIONS.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.client)}</td></tr>`).join("")+`</table>`;
+
+  o+=`<h2 class="pb">What we found, zone by zone</h2>`;
+  SECTIONS.forEach(s=>{
+    const rows=s.items.filter(it=>{const a=j.answers[it.id]||{};return a.r&&a.r!=="n";});
+    if(!rows.length) return;
+    o+=`<h3>${esc(s.name)}</h3>`;
+    rows.forEach(it=>{
+      const a=j.answers[it.id];
+      o+=`<div class="item-row"><span class="pill ${a.r}">${CLABEL[a.r]}</span> <strong>${esc(it.t)}</strong>`;
+      if(a.note) o+=`<p><em>What we saw:</em> ${nl(a.note)}</p>`;
+      if(a.r==="f"||a.r==="p"){ o+=`<p class="why"><em>Why it matters:</em> ${esc(it.why)}</p><p class="todo">What to do: ${esc(it.fix)}</p>`; }
+      if(a.photos&&a.photos.length) o+=`<div class="ph">${a.photos.map(p=>`<img src="${p}" alt="Photo: ${esc(it.t)}">`).join("")}</div>`;
+      o+=`</div>`;
+    });
+  });
+
+  o+=`<h2 class="pb">Your action plan</h2><p>Work through these in order. Tick each one off and note the date so you can show progress.</p>`;
+  if(acts.length) o+=`<table><tr><th>Done</th><th>Priority</th><th>Action</th><th>Who</th><th>Rough cost</th></tr>`+acts.map(a=>`<tr><td>&#9744;<br><span class="small">Date:</span></td><td>${esc(a.prio)}</td><td>${esc(a.text)}</td><td>${esc(a.effort)}</td><td>${esc(a.cost)||"Ask us"}</td></tr>`).join("")+`</table>`; else o+=`<p>No actions were needed from this visit. Keep up the seasonal checks below.</p>`;
+  o+=`<p class="small">Cost bands are rough guides only. We can give you a written quote for any item.</p>`;
+
+  o+=`<h2 class="pb">Keep it up: a year-round calendar</h2><p>Wildfire risk season in Nova Scotia runs from March 15 to October 15. Conditions around your home change every year, so these checks are worth repeating.</p><div class="cal">
+  <div class="box"><h3>Spring (before season starts)</h3><ul class="chk"><li>Rake and remove winter debris from Zone 1</li><li>Clean gutters and roof valleys</li><li>Clear under the deck and porch</li><li>Check vent screens and openings</li><li>Move firewood and stored items away from walls</li><li>Test your hose and reach all sides of the house</li></ul></div>
+  <div class="box"><h3>Summer</h3><ul class="chk"><li>Check the provincial burn map every day before any fire</li><li>Keep grass and weeds short</li><li>Keep the Zone 1 strip clear</li><li>Remove branches and debris after storms</li><li>Keep your go-bag and plan ready</li></ul></div>
+  <div class="box"><h3>Fall</h3><ul class="chk"><li>Clean needles and leaves from roof, gutters and deck</li><li>Trim branches back from the roof</li><li>Clear leaf build-up along walls</li><li>Review your action plan and mark what is done</li></ul></div>
+  <div class="box"><h3>Every year</h3><ul class="chk"><li>Book a follow-up visit to check progress</li><li>Update your evacuation plan</li><li>Review your home insurance with your insurer</li></ul></div></div>`;
+
+  o+=`<h2 class="pb">Be ready to leave</h2><div class="cal"><div class="box"><h3>Your household plan</h3><ul class="chk"><li>Two ways out of your property, and a meeting place</li><li>A plan for pets and anyone who needs help</li><li>A go-bag: medications, documents, chargers, water, a change of clothes</li><li>Phone numbers written down, not only on your phone</li><li>Check with your municipality about local emergency alerts</li></ul></div>
+  <div class="box"><h3>Know the rules</h3><ul><li>During wildfire risk season, no brush burning or campfires between 8 a.m. and 2 p.m.</li><li>Burn restrictions update daily at 2 p.m. Check the Nova Scotia burn map at novascotia.ca/burnsafe</li><li>Breaking burn restrictions can carry a $25,000 fine</li><li>Report a wildfire or a violation: 1-800-565-2224 or 911</li></ul></div></div>
+  <p class="small">Rules can change. Always check the current provincial and municipal information.</p>`;
+
+  o+=`<h2 class="pb">Your property record: keep this page</h2><p>This page is a snapshot of your property as it was on ${esc(inf.date)}. Keep it with your home records. Some insurers look closely at property-level details such as vegetation near the house, roofing and materials, and maintenance. Ask your insurer what documentation it accepts. We cannot promise any change to your coverage or premium.</p>`;
+  o+=`<table><tr><th>Property</th><td>${esc(inf.address)||"—"}</td></tr><tr><th>Assessment date</th><td>${esc(inf.date)}</td></tr><tr><th>Assessor</th><td>${esc(inf.assessor)||"—"}</td></tr>${CTX_FIELDS.map(([k,l])=>inf[k]?`<tr><th>${esc(l)}</th><td>${esc(inf[k])}</td></tr>`:"").join("")}<tr><th>Attention level</th><td>${res.level==="Not enough data"?"Incomplete":esc(res.level)}</td></tr><tr><th>Photos in this report</th><td>${photoCount(j)}</td></tr><tr><th>Actions recommended</th><td>${acts.length}</td></tr></table>`;
+  o+=`<h3>Yearly self-check</h3><p class="small">Copy or reprint this page each spring and fall.</p><table><tr><th>Priority check</th><th>Spring</th><th>Fall</th></tr>`+allItems().filter(x=>x.it.w===3).map(x=>`<tr><td>${esc(x.it.t)}</td><td>&#9744;</td><td>&#9744;</td></tr>`).join("")+`</table>`;
+
+  o+=`<h2>Questions or next steps</h2><p>We can help with follow-up visits, written quotes, and doing the work. ${contactLine()}</p>`;
+  o+=`<div class="foot small"><p><strong>Limitations.</strong> This report records observable wildfire risk factors on the date of the visit. It is not a guarantee that a property will survive a wildfire, and it does not promise any change to insurance coverage or premiums. Recommendations are based on general FireSmart concepts and may change. ${co} is not affiliated with FireSmart Canada unless stated in writing. Draft wording: have a lawyer review before use.</p><p>FireSmart, Intelli-feu and other associated Marks are trademarks of Canadian Interagency Forest Fire Centre Inc. (confirm current owner wording with FireSmart).</p></div>`;
+  return o;
+}
+
+function internalReportHTML(j){
+  const res=computeResult(j), inf=j.info;
+  const row=(l,v)=>v?`<div><strong>${esc(l)}:</strong> ${esc(v)}</div>`:"";
+  let o=`<div class="cover">${logoHTML()}<div><h1>Internal Assessment Record</h1><div class="co">${esc(settings.company)} · not for client</div></div></div>`;
+  o+=`<div class="meta">${row("Client",inf.client)}${row("Address",inf.address)}${row("Phone",inf.phone)}${row("Email",inf.email)}${row("PID",inf.pid)}${row("Date",inf.date)}${row("Assessor",inf.assessor)}${row("Weather",inf.weather)}${row("Present",inf.ownerAuth)}${row("Burn map",inf.burn)}${CTX_FIELDS.map(([k,l])=>row(l,inf[k])).join("")}</div>`;
+  if(inf.notes) o+=`<p>${nl(inf.notes)}</p>`;
+  if(res.flags.length) o+=`<div class="attn"><h3>Items needing owner or professional attention</h3><ul>`+res.flags.map(f=>`<li><strong>${esc(f.kind)}:</strong> ${esc(f.text)}${f.extra?" — "+esc(f.extra):""}${f.note?" (Note: "+esc(f.note)+")":""}</li>`).join("")+`</ul></div>`;
+  o+=`<h2>Summary</h2><p><span class="pill ${levelClass(res.level)}">${res.level==="Not enough data"?"Incomplete":"Attention level: "+esc(res.level)}</span> ${res.pct===null?"":"Condition score "+res.pct+"%. "}${res.rated} of ${res.required} items rated${res.unanswered?" ("+res.unanswered+" blank)":""}.</p>`;
+  if(j.summary) o+=`<p>${nl(j.summary)}</p>`;
+  const acts=sortedActions(j);
+  o+=`<h2>Action plan</h2>`;
+  if(acts.length) o+=`<table><tr><th>Priority</th><th>Action</th><th>Who</th><th>Cost band</th></tr>`+acts.map(a=>`<tr><td>${esc(a.prio)}</td><td>${esc(a.text)}</td><td>${esc(a.effort)}</td><td>${esc(a.cost)}</td></tr>`).join("")+`</table>`; else o+=`<p>No actions recorded.</p>`;
+  o+=`<h2>All findings</h2>`;
+  SECTIONS.forEach(s=>{
+    o+=`<h3>${esc(s.name)}</h3>`;
+    s.items.forEach(it=>{
+      const a=j.answers[it.id]||{};
+      o+=`<div class="item-row"><span class="pill ${a.r||"n"}">${a.r?RLABEL[a.r]:"Not rated"}</span> <strong>${esc(it.t)}</strong>${a.flag?" <strong>(flagged for review)</strong>":""}${a.note?`<div>${nl(a.note)}</div>`:""}${(a.photos&&a.photos.length)?`<div class="ph">${a.photos.map(p=>`<img src="${p}" alt="">`).join("")}</div>`:""}</div>`;
+    });
+  });
+  return o;
+}
+
+function reportText(j){
+  const res=computeResult(j), inf=j.info; const L=[];
+  L.push("PROPERTY WILDFIRE ASSESSMENT",settings.company,"");
+  L.push("Client: "+inf.client,"Address: "+inf.address,"Date: "+inf.date,"Assessor: "+inf.assessor,"Present: "+inf.ownerAuth,"Burn map: "+inf.burn);
+  CTX_FIELDS.forEach(([k,l])=>{ if(inf[k]) L.push(l+": "+inf[k]); });
+  if(res.flags.length){ L.push("","NEEDS HUMAN ATTENTION"); res.flags.forEach(f=>L.push("- "+f.kind+": "+f.text+(f.extra?" — "+f.extra:"")+(f.note?" ("+f.note+")":""))); }
+  L.push("","Attention level: "+res.level+(res.pct!==null?" (score "+res.pct+"%)":""));
+  if(j.summary) L.push(j.summary);
+  L.push("","ACTION PLAN");
+  sortedActions(j).forEach(a=>L.push("- ["+a.prio+"] "+a.text+" ("+a.effort+(a.cost?", "+a.cost:"")+")"));
+  L.push("","FINDINGS");
+  SECTIONS.forEach(s=>{ L.push("",s.name); s.items.forEach(it=>{ const a=j.answers[it.id]||{}; L.push("- "+it.t+": "+(a.r?RLABEL[a.r]:"Not rated")+(a.flag?" [FLAGGED]":"")+(a.note?" — "+a.note:"")+((a.photos&&a.photos.length)?" ("+a.photos.length+" photo(s))":"")); }); });
+  L.push("","Limitations: observable conditions on the visit date only; no guarantee against wildfire loss or insurance outcome.");
+  return L.join("\n");
+}
+function renderReport(m){
+  syncActions();
+  const modes=h("div",{class:"modes noprint"});
+  [["client","Client report"],["internal","Internal record"]].forEach(([k,l])=>modes.append(h("button",{class:reportMode===k?"on":"",onclick:()=>{reportMode=k;render();}},l)));
+  m.append(modes);
+  const res=computeResult(job);
+  if(reportMode==="client"){
+    const warn=[];
+    if(res.unanswered) warn.push(res.unanswered+" items are not rated and will be left out.");
+    if(res.flags.length) warn.push(res.flags.length+" flagged items should be reviewed by a person before this goes to the client.");
+    if(warn.length) m.append(h("div",{class:"warnbox noprint",style:"margin-top:12px"},h("strong",{},"Before you send this: "),warn.join(" ")));
+  }
+  const isClient=reportMode==="client";
+  m.append(h("div",{class:"row noprint"},
+    h("button",{class:"btn solid",onclick:()=>saveFile(slug(job.info.client)+(isClient?"-wildfire-readiness-plan-":"-internal-record-")+(job.info.date||today())+".html",exportDoc(isClient?clientReportHTML(job):internalReportHTML(job),isClient?"Wildfire Readiness Plan":"Internal Assessment Record"))},"Save report file"),
+    h("button",{class:"btn",onclick:()=>saveBackup([job])},"Save job backup"),
+    h("button",{class:"btn",onclick:()=>showText(reportText(job))},"Text version"),
+    h("button",{class:"btn",onclick:()=>{ try{ window.print(); }catch(e){ toast("Print isn't available here."); } }},"Print")));
+  m.append(h("p",{class:"notice noprint"},"Save report file gives you a file to email or share. Open it in a browser and choose Print, then Save as PDF, to make a PDF."));
+  const r=h("div",{class:"report"}); r.innerHTML=reportMode==="client"?clientReportHTML(job):internalReportHTML(job); m.append(r);
+}
+function showText(t){
+  const ta=h("textarea",{readonly:true},t);
+  const ov=h("div",{class:"overlay",onclick:e=>{if(e.target===ov)ov.remove();}},
+    h("div",{class:"sheet"},h("div",{class:"ttl"},"Text version"),ta,
+      h("div",{class:"row"},
+        h("button",{class:"btn solid",onclick:async()=>{ try{ await navigator.clipboard.writeText(t); }catch(e){ ta.focus(); ta.select(); } }},"Copy"),
+        h("button",{class:"btn",onclick:()=>ov.remove()},"Close"))));
+  document.body.append(ov); setTimeout(()=>{ta.focus();ta.select();},50);
+}
+
+/* ============ INIT ============ */
+(async function(){
+  loadSettings();
+  try{ if(window.claude&&window.claude.use){ window.claude.use("downloads").then(x=>{ dl=x; if(view==="jobs"||view==="report") render(); }).catch(()=>{}); } }catch(e){}
+  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  try{ if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js"); }catch(e){}
+  await DB.init();
+  jobs=await DB.all();
+  render();
+})();
+</script>
+</body>
+</html>
