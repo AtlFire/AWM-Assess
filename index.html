@@ -3,81 +3,96 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Property Wildfire Assessment</title>
+<title>AWM Field App</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Assess">
+<meta name="apple-mobile-web-app-title" content="AWM">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#1d5946">
-<style>
+<meta name="theme-color" content="#1f4a3d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style id="appcss">
 :root{
-  --bg:#eaefeb; --surface:#ffffff; --ink:#15201b; --muted:#54635c; --line:#c9d3cd;
-  --brand:#1d5946; --brand-ink:#ffffff; --good:#2b7a4b; --good-bg:#e3f2e8;
-  --fair:#9a5b00; --fair-bg:#fff2d9; --poor:#ae2a22; --poor-bg:#fbe6e3; --shadow:rgba(20,32,27,.12);
+  --bg:#edf1ee; --surface:#ffffff; --ink:#22302b; --muted:#54635c; --line:#cbd6d0;
+  --brand:#1f4a3d; --brand-ink:#ffffff; --tide:#2e6f8e; --tint:#e3ece7;
+  --good:#2b7a4b; --good-bg:#e3f2e8; --fair:#9a5b00; --fair-bg:#fff2d9; --poor:#ae2a22; --poor-bg:#fbe6e3; --shadow:rgba(20,32,27,.12);
+  --logo-r1:#2e6f8e; --logo-r2:#9cc5b5; --logo-disc:#1f4a3d; --logo-inner:#ffffff;
+  --head:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#121a17; --surface:#1b2622; --ink:#e8efeb; --muted:#9db0a7; --line:#33443d;
-    --brand:#5fb896; --brand-ink:#0b1712; --good:#6fcf95; --good-bg:#183524;
-    --fair:#f0b45a; --fair-bg:#3a2b10; --poor:#ff8a80; --poor-bg:#411b18; --shadow:rgba(0,0,0,.4);
+    --bg:#111a16; --surface:#1a2621; --ink:#e8efeb; --muted:#9db0a7; --line:#33443d; --tint:#1c2b25;
+    --brand:#9cc5b5; --brand-ink:#0b1712; --tide:#7fb6d1;
+    --good:#6fcf95; --good-bg:#183524; --fair:#f0b45a; --fair-bg:#3a2b10; --poor:#ff8a80; --poor-bg:#411b18; --shadow:rgba(0,0,0,.4);
+    --logo-r1:#7fb6d1; --logo-r2:#d8c7a6; --logo-disc:#9cc5b5; --logo-inner:#16352c;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#121a17; --surface:#1b2622; --ink:#e8efeb; --muted:#9db0a7; --line:#33443d;
-  --brand:#5fb896; --brand-ink:#0b1712; --good:#6fcf95; --good-bg:#183524;
-  --fair:#f0b45a; --fair-bg:#3a2b10; --poor:#ff8a80; --poor-bg:#411b18; --shadow:rgba(0,0,0,.4);
+  --bg:#111a16; --surface:#1a2621; --ink:#e8efeb; --muted:#9db0a7; --line:#33443d; --tint:#1c2b25;
+  --brand:#9cc5b5; --brand-ink:#0b1712; --tide:#7fb6d1;
+  --good:#6fcf95; --good-bg:#183524; --fair:#f0b45a; --fair-bg:#3a2b10; --poor:#ff8a80; --poor-bg:#411b18; --shadow:rgba(0,0,0,.4);
+  --logo-r1:#7fb6d1; --logo-r2:#d8c7a6; --logo-disc:#9cc5b5; --logo-inner:#16352c;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-size:17px;line-height:1.4}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.4}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-.wrap{max-width:860px;margin:0 auto;padding:0 14px 110px}
+h2{font-family:var(--head);font-size:24px;margin:18px 0 2px;line-height:1.1;letter-spacing:-.01em}
+h3{font-family:var(--head);margin:0 0 6px}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px 120px}
 .chrome{position:sticky;top:0;z-index:20;background:var(--bg);padding-top:max(8px,env(safe-area-inset-top));border-bottom:1px solid var(--line)}
 .chrome .wrap{padding-bottom:0}
 .bar{display:flex;align-items:center;gap:10px;padding:4px 0 8px}
 .brandbox{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
 .brandbox svg,.brandbox img{width:38px;height:38px;flex:0 0 auto;object-fit:contain}
 .brandbox .t{min-width:0}
-.brandbox b{display:block;font-size:16px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brandbox b{display:block;font-family:var(--head);font-size:16px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brandbox span{display:block;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--brand);background:transparent;color:var(--brand);font-weight:600}
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--brand);background:transparent;color:var(--brand);font-weight:700}
 .btn.solid{background:var(--brand);color:var(--brand-ink)}
+.btn.tide{background:var(--tide);border-color:var(--tide);color:#fff}
 .btn.warn{border-color:var(--poor);color:var(--poor)}
-.btn.small{min-height:38px;padding:0 12px;font-size:15px}
+.btn.small{min-height:38px;padding:0 12px;font-size:16px}
 .btn.block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.modes{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:0 0 8px}
+.modes button{min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px;padding:0 2px}
+.modes button.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .prog{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin:0 0 8px}
 .prog i{display:block;height:100%;background:var(--brand)}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;min-height:44px;padding:4px 14px;border-radius:22px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:15px;text-align:center}
+.tab{flex:0 0 auto;min-height:44px;padding:4px 14px;border-radius:22px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px;text-align:center}
 .tab small{display:block;font-weight:500;color:var(--muted);font-size:12px;line-height:1.1}
-.tab.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
-.tab.on small{color:var(--brand-ink);opacity:.85}
+.tab.on{background:var(--tide);border-color:var(--tide);color:#fff}
+.tab.on small{color:#fff;opacity:.9}
 .tab.alert{border-color:var(--poor)}
-h2{font-size:22px;margin:18px 0 2px}
-.sub{color:var(--muted);margin:0 0 12px;font-size:15px}
+.sub{color:var(--muted);margin:0 0 12px;font-size:16px}
 .card,.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:0 1px 2px var(--shadow)}
 .item.flagged{border-color:var(--poor);border-width:2px}
 .item.crit .ttl::after{content:" • priority item";font-weight:500;font-size:13px;color:var(--muted)}
 .ttl{font-weight:700;font-size:18px}
 .hint{color:var(--muted);font-size:15px;margin:2px 0 10px}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.seg button{min-height:50px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:600}
+.seg button{min-height:50px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
 .seg button.on[data-r="g"]{background:var(--good-bg);border-color:var(--good);color:var(--good)}
 .seg button.on[data-r="f"]{background:var(--fair-bg);border-color:var(--fair);color:var(--fair)}
 .seg button.on[data-r="p"]{background:var(--poor-bg);border-color:var(--poor);color:var(--poor)}
 .seg button.on[data-r="n"]{background:var(--bg);border-color:var(--muted);color:var(--muted)}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
-textarea,input[type=text],input[type=date],input[type=tel],input[type=email],input[type=url],select{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);min-height:46px}
+textarea,input[type=text],input[type=date],input[type=tel],input[type=email],input[type=url],input[type=number],select{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);min-height:46px}
 textarea{min-height:64px;resize:vertical;margin-top:10px}
-label.f{display:block;margin:0 0 12px;font-weight:600;font-size:15px}
+label.f{display:block;margin:0 0 12px;font-weight:700;font-size:15px}
 label.f > *:not(span){margin-top:5px;font-weight:400}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-@media (max-width:560px){.grid2{grid-template-columns:1fr}}
-.flagbtn{min-height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:15px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 10px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
+.flagbtn{min-height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px}
 .flagbtn.on{background:var(--poor-bg);border-color:var(--poor);color:var(--poor)}
 .thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .thumb{position:relative;width:92px;height:92px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
@@ -85,59 +100,89 @@ label.f > *:not(span){margin-top:5px;font-weight:400}
 .thumb button{position:absolute;top:2px;right:2px;width:30px;height:30px;border-radius:15px;border:none;background:rgba(0,0,0,.65);color:#fff;font-size:16px;line-height:1}
 .esc{display:flex;gap:12px;align-items:flex-start}
 .esc .seg{grid-template-columns:repeat(2,64px);flex:0 0 auto}
-.esc .g{margin-top:8px;color:var(--poor);font-size:15px;font-weight:600}
+.esc .g{margin-top:8px;color:var(--poor);font-size:15px;font-weight:700}
 .pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:14px;font-weight:700}
 .pill.g{background:var(--good-bg);color:var(--good)}
 .pill.f{background:var(--fair-bg);color:var(--fair)}
 .pill.p{background:var(--poor-bg);color:var(--poor)}
-.pill.n{background:var(--bg);color:var(--muted)}
+.pill.n{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.pill.t{background:var(--tint);color:var(--tide)}
 .attn{border:2px solid var(--poor);background:var(--poor-bg);border-radius:14px;padding:12px 14px;margin:0 0 12px}
 .attn h3{margin:0 0 6px;font-size:18px;color:var(--poor)}
 .attn ul{margin:0;padding-left:20px}
 .attn li{margin:4px 0}
 .warnbox{border:2px solid var(--fair);background:var(--fair-bg);border-radius:14px;padding:12px 14px;margin:0 0 12px}
+.okbox{border:2px solid var(--good);background:var(--good-bg);border-radius:14px;padding:12px 14px;margin:0 0 12px}
 .score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.score .big{font-size:38px;font-weight:800;line-height:1}
+.score .big{font-family:var(--head);font-size:38px;font-weight:800;line-height:1}
 .act{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
 .act:first-child{border-top:none;padding-top:0;margin-top:0}
 .notice{font-size:14px;color:var(--muted);margin:14px 0}
+.stat{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 12px}
+@media (min-width:640px){.stat{grid-template-columns:repeat(4,1fr)}}
+.stat div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:var(--head);font-size:22px;line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto;min-height:38px;padding:0 14px;border-radius:19px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px}
+.chips button.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .joblist .item{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:var(--surface);width:100%;max-width:860px;border-radius:18px 18px 0 0;padding:16px;max-height:88vh;display:flex;flex-direction:column;gap:10px}
+.sheet{background:var(--surface);width:100%;max-width:900px;border-radius:18px 18px 0 0;padding:16px;max-height:88vh;display:flex;flex-direction:column;gap:10px;overflow:auto}
 .sheet textarea{flex:1;min-height:40vh;font-size:14px;font-family:ui-monospace,Menlo,monospace}
 .navbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--bg);border-top:1px solid var(--line);padding:8px 14px max(8px,env(safe-area-inset-bottom))}
-.navbar .in{max-width:860px;margin:0 auto;display:grid;grid-template-columns:1fr 2fr;gap:10px}
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0 0}
-.modes button{min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
-.modes button.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.navbar .in{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.dm{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.dm button{min-height:42px;padding:0 14px;border-radius:21px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:15px}
+.dm button.on{background:var(--tide);border-color:var(--tide);color:#fff}
 .logoprev{display:flex;align-items:center;gap:14px}
 .logoprev svg,.logoprev img{width:72px;height:72px;object-fit:contain}
-.tag{display:inline-block;background:var(--fair-bg);color:var(--fair);border-radius:8px;padding:2px 8px;font-size:13px;font-weight:700}
-
-/* ---------- Report (always light, paper-style) ---------- */
-.report{background:#fff;color:#111;border-radius:6px;padding:28px;margin:14px 0;font-size:15px;line-height:1.5}
-.report h1{font-size:30px;margin:0 0 4px;color:#1d5946;line-height:1.15}
-.report h2{font-size:20px;margin:26px 0 8px;color:#1d5946;border-bottom:2px solid #1d5946;padding-bottom:4px}
-.report h3{font-size:16px;margin:16px 0 4px;color:#1d5946}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:78px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:60;max-width:90vw;font-size:15px;box-shadow:0 4px 14px var(--shadow)}
+.est{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.est.open{display:block}
+.money{font-family:var(--head);font-weight:800}
+.qline{display:grid;grid-template-columns:1fr 110px 40px;gap:8px;align-items:start;margin:0 0 10px}
+.qline textarea{margin:0;min-height:52px}
+.totals{margin-top:8px;border-top:2px solid var(--line);padding-top:8px}
+.totals div{display:flex;justify-content:space-between;padding:3px 0}
+.totals .big{font-family:var(--head);font-size:22px;font-weight:800}
+.sigwrap{border:1.5px dashed var(--line);border-radius:12px;background:#fff;touch-action:none}
+.sigwrap canvas{display:block;width:100%;height:150px;touch-action:none}
+.taskrow{display:flex;gap:10px;align-items:flex-start}
+.taskrow input[type=checkbox]{width:28px;height:28px;flex:0 0 auto;margin-top:3px;accent-color:var(--brand)}
+.timer{font-family:var(--head);font-size:34px;font-weight:800}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--muted)}
+:focus-visible{outline:3px solid var(--tide);outline-offset:2px}
+</style>
+<style id="docss">
+.report{background:#fff;color:#14201a;border-radius:6px;padding:26px;margin:14px 0;font-family:"Source Sans 3",system-ui,sans-serif;font-size:16px;line-height:1.5}
+.report h1{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:30px;margin:0 0 4px;color:#1f4a3d;line-height:1.1;letter-spacing:-.01em}
+.report h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:20px;margin:26px 0 8px;color:#1f4a3d;border-bottom:2px solid #2e6f8e;padding-bottom:4px}
+.report h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:16px;margin:16px 0 4px;color:#1f4a3d}
 .report p{margin:6px 0}
 .report table{width:100%;border-collapse:collapse;margin:8px 0}
-.report th,.report td{border:1px solid #c8d0cc;padding:7px 9px;text-align:left;vertical-align:top;font-size:14px}
-.report th{background:#eef3f0}
-.report .meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:14px}
-.report .attn{background:#fbe6e3;color:#111;border-color:#ae2a22}
+.report th,.report td{border:1px solid #c8d3cd;padding:7px 9px;text-align:left;vertical-align:top;font-size:14.5px}
+.report th{background:#e8f0ec}
+.report td.r,.report th.r{text-align:right}
+.report .meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:14.5px}
+.report .attn{background:#fbe6e3;color:#14201a;border-color:#ae2a22}
 .report .attn h3{color:#ae2a22;margin-top:0}
-.report .pill.g{background:#e3f2e8;color:#1e6a3d}.report .pill.f{background:#fff2d9;color:#8a5200}.report .pill.p{background:#fbe6e3;color:#ae2a22}.report .pill.n{background:#eee;color:#555}
+.report .pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:13.5px;font-weight:700}
+.report .pill.g{background:#e3f2e8;color:#1e6a3d}.report .pill.f{background:#fff2d9;color:#8a5200}.report .pill.p{background:#fbe6e3;color:#ae2a22}.report .pill.n{background:#eee;color:#555}.report .pill.t{background:#e0eef4;color:#1f5b78}
 .report .ph{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .report .ph img{width:170px;height:125px;object-fit:cover;border:1px solid #ccc;border-radius:4px}
 .report .small{font-size:12.5px;color:#444}
 .report .item-row{break-inside:avoid;margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid #e3e8e5}
 .report .why{color:#333}
-.report .todo{color:#1d5946;font-weight:600}
-.report .cover{display:flex;align-items:center;gap:16px;border-bottom:4px solid #1d5946;padding-bottom:14px;margin-bottom:14px}
-.report .cover svg,.report .cover img{width:86px;height:86px;object-fit:contain;flex:0 0 auto}
+.report .todo{color:#1f4a3d;font-weight:700}
+.report .cover{display:flex;align-items:center;gap:16px;border-bottom:4px solid #1f4a3d;padding-bottom:14px;margin-bottom:14px}
+.report .cover svg,.report .cover img{width:82px;height:82px;object-fit:contain;flex:0 0 auto}
 .report .cover .co{font-size:15px;color:#333}
 .report .glance{display:grid;grid-template-columns:1fr;gap:10px}
-.report .box{border:1.5px solid #1d5946;border-radius:8px;padding:10px 14px;background:#f3f8f5}
+.report .box{border:1.5px solid #1f4a3d;border-radius:8px;padding:10px 14px;background:#eef4f1}
 .report .box h3{margin-top:0}
 .report ol,.report ul{margin:6px 0;padding-left:22px}
 .report li{margin:3px 0}
@@ -146,26 +191,29 @@ label.f > *:not(span){margin-top:5px;font-weight:400}
 .report .cal{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:560px){.report .cal,.report .meta{grid-template-columns:1fr}}
 .report .pb{break-before:page}
-.report .foot{margin-top:24px;border-top:1px solid #c8d0cc;padding-top:8px}
+.report .foot{margin-top:24px;border-top:1px solid #c8d3cd;padding-top:8px}
+.report .tot{margin-left:auto;width:min(340px,100%)}
+.report .tot div{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e3e8e5}
+.report .tot .big{font-weight:800;font-size:18px;border-bottom:2px solid #1f4a3d}
+.report .sig{border:1px solid #c8d3cd;border-radius:6px;min-height:80px;padding:6px;margin:6px 0}
+.report .sig img{max-height:90px}
+.report .line{border-bottom:1px solid #999;height:26px;margin:6px 0}
+.report .stamp{display:inline-block;border:2px solid #1f4a3d;color:#1f4a3d;border-radius:6px;padding:2px 10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
 @media print{
   body{background:#fff}
   .chrome,.noprint,.navbar{display:none!important}
   .wrap{max-width:none;padding:0}
   .report{margin:0;padding:0;border-radius:0}
-  .report .pb{break-before:page}
 }
-.toast{position:fixed;left:50%;transform:translateX(-50%);top:78px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:60;max-width:90vw;font-size:15px;box-shadow:0 4px 14px var(--shadow)}
-:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 </style>
 </head>
 <body>
 <div class="chrome noprint" id="chrome"></div>
 <div class="wrap" id="main"></div>
 <div class="navbar noprint" id="nav" style="display:none"></div>
-
 <script>
 "use strict";
-/* ============ DATA ============ */
+/* ================= DATA ================= */
 const OPTS = {
   propType:["Year-round home","Seasonal cottage","Multi-unit / condo","Commercial","Campground / other"],
   roof:["Metal","Asphalt shingle","Clay / composite tile","Wood shake","Other / unsure"],
@@ -177,19 +225,23 @@ const OPTS = {
   burn:["Checked: no restriction","Checked: restrictions in effect","Checked: ban / woods closure","Not checked"]
 };
 const SECTIONS = [
- {id:"z1",tab:"0–1.5 m",name:"Zone 1: 0 to 1.5 m",sub:"The non-combustible zone around the house and deck.",client:"Right against your house and deck. Keeping this strip free of anything that can burn is one of the most effective steps.",items:[
+ {id:"z1",tab:"0–1.5 m",name:"Zone 1: 0 to 1.5 m",sub:"The non-combustible zone around the house and deck.",client:"Right against your house and deck. Keeping this strip free of anything that can burn is one of the most effective steps.",
+  meas:[{k:"comb",l:"Nearest combustible material to the house or deck",u:"m",t:"comb"}],
+  items:[
   {id:"z1a",w:3,t:"Ground next to the foundation",h:"Gravel, pavers or bare soil is good. Mulch, wood chips, dry plants or lawn clippings against the wall is poor.",fix:"Remove combustible mulch and plants within 1.5 m of the walls; replace with gravel, pavers or bare soil.",why:"Embers can land in mulch and dry plants and smoulder right against the wall."},
   {id:"z1b",w:1,t:"Combustibles against walls",h:"Firewood, planters, furniture, propane grills, trash bins, stacked lumber.",fix:"Move combustible items at least 1.5 m from the house walls.",why:"Items stacked against walls give embers something to ignite next to the house."},
   {id:"z1c",w:3,t:"Under deck, porch and stairs",h:"Storage, dry leaves, open gaps where embers can collect.",fix:"Clear stored items and debris under the deck; enclose or screen the open underside with non-combustible material.",why:"Embers collect under decks and are hard to see; stored items and debris there can ignite the house from below."},
   {id:"z1d",w:1,t:"Deck surface and debris",h:"Needles and leaves in the gaps, wood condition, items left on the deck.",fix:"Clean debris from the deck surface and gaps; keep the deck clear of combustible clutter.",why:"Leaves and needles in deck gaps can ignite from embers."},
   {id:"z1e",w:3,t:"Roof covering and condition",h:"Metal, asphalt, clay or composite is better than wood shakes. Note curled, missing or damaged pieces.",fix:"Repair or replace damaged roofing; ask about a Class A rated covering if the roof is wood shake.",why:"The roof is one of the first places embers land, so the covering and its condition matter."},
   {id:"z1f",w:1,t:"Gutters, valleys and roof debris",h:"Needles and leaves in gutters, valleys and around chimneys.",fix:"Clean gutters and roof valleys; consider non-combustible gutter guards.",why:"Dry leaves and needles in gutters and valleys can catch embers."},
-  {id:"z1g",w:3,t:"Vents and openings",h:"Attic, soffit, foundation and crawlspace vents. Look for missing or damaged screens where embers can enter. Confirm the current mesh specification in the FireSmart guide.",fix:"Screen or cover vents and openings with fine non-combustible mesh per the current FireSmart guide.",why:"Vents can let embers into attics and crawlspaces where they are hard to spot."},
+  {id:"z1g",w:3,t:"Vents and openings",h:"Attic, soffit, foundation and crawlspace vents. Look for missing or damaged screens where embers can enter. Confirm the current mesh specification before recommending a product.",fix:"Screen or cover vents and openings with fine non-combustible mesh.",why:"Vents can let embers into attics and crawlspaces where they are hard to spot."},
   {id:"z1h",w:1,t:"Siding, eaves and soffits",h:"Gaps, rot, wood siding close to the ground, open eaves.",fix:"Repair gaps and damage; keep siding clear of the ground and add non-combustible protection near grade.",why:"Gaps and untreated wood let embers and heat reach the structure."},
   {id:"z1i",w:1,t:"Windows and doors",h:"Cracked glass, gaps, weatherstripping, wood trim condition.",fix:"Repair gaps and damaged seals; consider upgraded glazing when windows are replaced.",why:"Heat can crack glass, and gaps let embers in."},
   {id:"z1j",w:1,t:"Fences and attachments touching the house",h:"A wood fence, trellis or lattice connected to the house acts like a fuse.",fix:"Replace the last 1.5 m of any fence connected to the house with non-combustible material, or leave a gap.",why:"A fence attached to the house can carry fire directly to the wall."}
  ]},
- {id:"z2",tab:"1.5–10 m",name:"Zone 1 to 10 m",sub:"Intermediate area around the structure.",client:"From the edge of Zone 1 out to about 10 m. The goal is to keep fuel low, spaced apart, and away from the house.",items:[
+ {id:"z2",tab:"1.5–10 m",name:"Zone 1.5 to 10 m",sub:"Intermediate area around the structure.",client:"From the edge of the first strip out to about 10 m. The goal is to keep fuel low, spaced apart, and away from the house.",
+  meas:[{k:"conif",l:"Distance to nearest conifer (spruce, fir, pine, cedar)",u:"m",t:"conif"},{k:"space",l:"Spacing between nearest tree crowns",u:"m",t:"space"},{k:"shed",l:"Distance to nearest outbuilding",u:"m"},{k:"wood",l:"Distance from house to woodpile",u:"m"},{k:"prop",l:"Cleared distance around propane or fuel tank",u:"m"}],
+  items:[
   {id:"z2a",w:3,t:"Conifers within 10 m",h:"Spruce, fir, pine and cedar burn hot. Ideally none within 10 m of the home.",fix:"Remove or heavily limb conifers within 10 m of the house (arborist for large trees).",why:"Conifers burn hot and can throw embers; distance from the home lowers that risk."},
   {id:"z2b",w:1,t:"Tree spacing",h:"About 3 m between crowns lowers the chance of fire moving tree to tree.",fix:"Thin trees so crowns are about 3 m apart.",why:"Space between tree crowns makes it harder for fire to move from tree to tree."},
   {id:"z2c",w:3,t:"Branches over roof or near chimney",h:"Overhanging branches drop debris and carry fire to the roof.",fix:"Prune branches back from the roof and chimney (arborist if work is aloft).",why:"Branches over the roof drop fuel and can carry fire to the house."},
@@ -199,25 +251,40 @@ const SECTIONS = [
   {id:"z2g",w:3,t:"Propane and fuel storage",h:"Tank location, clearance, vegetation around it. If you smell gas, stop and see Escalations.",fix:"Clear vegetation around tanks and follow supplier guidance on clearance.",why:"Fuel tanks near vegetation add risk; clearing around them helps."},
   {id:"z2h",w:1,t:"Firewood pile location",h:"Ideally well away from the house and not under trees.",fix:"Relocate the woodpile away from the house and clear the area around it.",why:"A woodpile is a large amount of fuel; keep it away from the house."}
  ]},
- {id:"z3",tab:"10–30 m",name:"Zone 2: 10 to 30 m",sub:"Reduce fuel so fire stays low and slow.",client:"Further out. Thinning and clearing here helps keep a fire low and slower, which gives firefighters and your home a better chance.",items:[
+ {id:"z3",tab:"10–30 m",name:"Zone 10 to 30 m",sub:"Reduce fuel so fire stays low and slow.",client:"Further out. Thinning and clearing here helps keep a fire low and slower, which gives firefighters and your home a better chance.",
+  meas:[{k:"grass",l:"Height of grass and weeds",u:"cm"},{k:"ladder",l:"Height of lowest branches on nearest trees",u:"m"}],
+  items:[
   {id:"z3a",w:3,t:"Ladder fuels and understory",h:"Shrubs, young trees and hanging branches that connect ground fuels to tree crowns.",fix:"Remove ladder fuels and thin understory.",why:"Ladder fuels help a surface fire reach the treetops, where it spreads faster."},
   {id:"z3b",w:1,t:"Dead and downed material",h:"Dead standing trees, fallen trees, branch piles, slash.",fix:"Remove dead and downed material; chip or haul away.",why:"Dead and fallen material dries out and burns easily."},
   {id:"z3c",w:1,t:"Grass and ground cover height",h:"Tall dry grass and weeds carry fast surface fire.",fix:"Mow grass and weeds short and keep them green or cut.",why:"Tall dry grass carries fast-moving surface fire."},
   {id:"z3d",w:1,t:"Debris and storage piles",h:"Lumber, brush, old vehicles, equipment.",fix:"Consolidate or remove piles and stored materials away from the home.",why:"Piles of brush, lumber or stored items add fuel."}
  ]},
- {id:"z4",tab:"30–100 m",name:"Zone 3: 30 to 100 m and beyond",sub:"The landscape around the property.",client:"The wider surroundings. You may not control all of it, but it shapes how fire could approach.",items:[
-  {id:"z4a",w:3,t:"Continuous forest next to the property",h:"Unbroken woods, especially conifer, running up to the lot.",fix:"Talk with neighbours and your municipality about a neighbourhood fuel break, and ask about local FireSmart programs.",why:"Continuous forest up to the lot lets fire approach without a break."},
+ {id:"z4",tab:"30–100 m",name:"Zone 30 to 100 m and beyond",sub:"The landscape around the property.",client:"The wider surroundings. You may not control all of it, but it shapes how fire could approach.",
+  meas:[{k:"woods",l:"Distance to continuous woods",u:"m"},{k:"slope",l:"Slope near the house",u:"%"}],
+  items:[
+  {id:"z4a",w:3,t:"Continuous forest next to the property",h:"Unbroken woods, especially conifer, running up to the lot.",fix:"Talk with neighbours and your municipality about a neighbourhood fuel break.",why:"Continuous forest up to the lot lets fire approach without a break."},
   {id:"z4b",w:1,t:"Neighbouring structures and hazards",h:"Nearby unkept properties, sheds, vehicle storage.",fix:"Talk with neighbours about shared risks; consider a neighbourhood approach.",why:"Risk is shared; neighbouring conditions affect your property."},
   {id:"z4c",w:1,t:"Water sources nearby",h:"Pond, lake, hydrant, cistern. Note distance.",fix:"Know where your nearest water source is and how you could reach it with a hose or pump.",why:"Knowing where water is helps firefighters and your own preparation."}
  ]},
- {id:"ac",tab:"Access",name:"Access and readiness",sub:"Can help arrive, and can the household get out?",client:"Getting help in and getting your household out safely.",items:[
+ {id:"ac",tab:"Access",name:"Access and emergency preparedness",sub:"Can help arrive, and can the household get out?",client:"Getting help in and getting your household out safely.",
+  meas:[{k:"drive",l:"Driveway width",u:"m"},{k:"clear",l:"Overhead clearance on access route",u:"m"}],
+  items:[
   {id:"aca",w:3,t:"Driveway width and overhead clearance",h:"Clear route for emergency vehicles, branches trimmed back, gates wide enough.",fix:"Widen and trim the access route so emergency vehicles can pass.",why:"Emergency vehicles need a clear, wide route in."},
   {id:"acb",w:1,t:"Turnaround space",h:"Space at the end of a long driveway to turn around.",fix:"Create or mark a turnaround area.",why:"A turnaround helps fire trucks leave safely."},
   {id:"acc",w:1,t:"Civic number visible from the road",h:"Reflective, readable from both directions.",fix:"Install a clear, reflective civic number at the road.",why:"Responders need to find your address quickly."},
   {id:"acd",w:1,t:"Water and hose access",h:"Working hose reaching all sides of the home.",fix:"Add or repair hose access.",why:"A working hose helps with small spot fires and wetting down."},
-  {id:"ace",w:3,t:"Evacuation plan and go-bag discussed",h:"Two exit routes, meeting place, pets, documents.",fix:"Write a simple evacuation plan and pack a go-bag.",why:"A plan made before an emergency saves time when it counts."}
+  {id:"ace",w:3,t:"Emergency plan and go-bag discussed",h:"Two exit routes, meeting place, pets, documents.",fix:"Write a simple emergency plan and pack a go-bag.",why:"A plan made before an emergency saves time when it counts."}
  ]}
 ];
+/* Placeholder estimates per checklist item. who: Crew | Homeowner | Arborist | Other. c: crew key. q: needs a separate quote. */
+const ITEM_EST={
+ z1a:{w:"Crew",h:1.5,c:"crew2",m:40,d:40}, z1b:{w:"Crew",h:.5,c:"crew2"}, z1c:{w:"Crew",h:1.5,c:"crew2",d:40}, z1d:{w:"Crew",h:.5,c:"crew2"},
+ z1e:{w:"Other",q:1}, z1f:{w:"Crew",h:1,c:"crew2"}, z1g:{w:"Crew",h:2,c:"crew2",m:60}, z1h:{w:"Other",q:1}, z1i:{w:"Other",q:1}, z1j:{w:"Crew",h:1,c:"crew2",m:50},
+ z2a:{w:"Arborist",q:1}, z2b:{w:"Arborist",q:1}, z2c:{w:"Arborist",q:1}, z2d:{w:"Crew",h:2,c:"crew2",d:40}, z2e:{w:"Crew",h:1.5,c:"crew2",d:40}, z2f:{w:"Crew",h:1,c:"crew2"}, z2g:{w:"Crew",h:1,c:"crew2"}, z2h:{w:"Crew",h:.5,c:"crew2"},
+ z3a:{w:"Crew",h:3,c:"crew3",d:40}, z3b:{w:"Crew",h:3,c:"crew3",d:80}, z3c:{w:"Crew",h:1,c:"crew2"}, z3d:{w:"Crew",h:1.5,c:"crew2",d:80},
+ z4a:{w:"Homeowner"}, z4b:{w:"Homeowner"}, z4c:{w:"Homeowner"},
+ aca:{w:"Crew",h:2,c:"crew2"}, acb:{w:"Other",q:1}, acc:{w:"Crew",h:.5,c:"crew2",m:30}, acd:{w:"Homeowner"}, ace:{w:"Homeowner"}
+};
 const ESC = [
  {id:"e1",t:"Overhead power lines in or near trees",g:"Do not work near lines. Contact the utility. Human decision required before any tree work."},
  {id:"e2",t:"Dead, leaning or hazardous trees near the structure",g:"Refer to a qualified arborist. Do not fell without proper training and insurance."},
@@ -232,581 +299,962 @@ const ESC = [
  {id:"e11",t:"Anything outside your training or scope",g:"Escalate to the owner or a qualified professional before advising."},
  {id:"e12",t:"Smoke or active fire",g:"Call 911 immediately and leave."}
 ];
-const CTX_FIELDS = [["propType","Property type"],["roof","Roof covering"],["siding","Main siding"],["deck","Deck"],["slope","Slope"],["woods","Distance to continuous woods"]];
-const TABS = [{id:"info",label:"Info"}].concat(SECTIONS.map(s=>({id:s.id,label:s.tab,sec:s})),[{id:"esc",label:"Escalate"},{id:"plan",label:"Summary"}]);
-const RLABEL = {g:"Good",f:"Fair",p:"Poor",n:"N/A"};
-const CLABEL = {g:"In good shape",f:"Could be improved",p:"Needs attention",n:"Not applicable"};
-const PRIOS = ["High","Medium","Low"];
-const COSTS = ["","Under $100","$100–500","$500–2,000","Over $2,000","Needs quote"];
-const EFFORT = ["Homeowner","Pro / crew","Arborist","Other"];
-const LEVEL_TEXT = {
+const CTX_FIELDS=[["propType","Property type"],["roof","Roof covering"],["siding","Main siding"],["deck","Deck"],["slope","Slope"],["woods","Distance to continuous woods"]];
+const RLABEL={g:"Good",f:"Fair",p:"Poor",n:"N/A"};
+const CLABEL={g:"In good shape",f:"Could be improved",p:"Needs attention",n:"Not applicable"};
+const PRIOS=["High","Medium","Low"];
+const WHO=["Crew","Homeowner","Arborist","Other"];
+const CREWS=[["assessor","Assessor (1 person)"],["crew2","Crew of 2"],["crew3","Crew of 3 + chipper"]];
+const LEVEL_TEXT={
   "Low":"Your property has few of the common conditions that let embers and fire reach a home. Keep up the seasonal checks in this plan.",
   "Moderate":"Your property has some strengths and some gaps. Finishing the high-priority actions will make the biggest difference.",
   "High":"Several conditions around your home could let embers or fire reach it. Start with the first steps below.",
   "Extreme":"Many conditions around your home could let embers or fire reach it. We recommend acting on the first steps as soon as you can and talking with us about a plan.",
   "Not enough data":"This assessment is not complete yet."
 };
+const STAGES={lead:"Lead",assessed:"Assessed",quoted:"Quoted",accepted:"Accepted",inprogress:"In progress",complete:"Work done",invoiced:"Invoiced",paid:"Paid",declined:"Declined"};
+const STAGE_ORDER=["lead","assessed","quoted","accepted","inprogress","complete","invoiced","paid","declined"];
+const PAY_METHODS=["e-Transfer","Cheque","Cash","Card","Other"];
+const TABS=[{id:"info",label:"Info"}].concat(SECTIONS.map(s=>({id:s.id,label:s.tab,sec:s})),[{id:"esc",label:"Escalate"},{id:"plan",label:"Summary"}]);
 
-/* ============ STORAGE ============ */
-const DB = {
-  db:null, mem:new Map(), ok:false,
-  async init(){
-    try{
-      this.db = await new Promise((res,rej)=>{
-        const r = indexedDB.open("awm-assess",1);
-        r.onupgradeneeded=()=>r.result.createObjectStore("jobs",{keyPath:"id"});
-        r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
-      });
-      this.ok = true;
-    }catch(e){ this.db=null; this.ok=false; }
-  },
-  store(mode){ return this.db.transaction("jobs",mode).objectStore("jobs"); },
-  all(){
-    if(!this.db) return Promise.resolve([...this.mem.values()]);
-    return new Promise(res=>{ try{ const q=this.store("readonly").getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>res([]); }catch(e){res([]);} });
-  },
-  put(j){
-    if(!this.db){ this.mem.set(j.id,j); return Promise.resolve(); }
-    return new Promise(res=>{ try{ const q=this.store("readwrite").put(j); q.onsuccess=()=>res(); q.onerror=()=>res(); }catch(e){res();} });
-  },
-  del(id){
-    if(!this.db){ this.mem.delete(id); return Promise.resolve(); }
-    return new Promise(res=>{ try{ const q=this.store("readwrite").delete(id); q.onsuccess=()=>res(); q.onerror=()=>res(); }catch(e){res();} });
-  }
-};
-const DEFAULT_SETTINGS = {company:"Atlantic Wildfire Mitigation & Co",tagline:"Property wildfire readiness",phone:"",email:"",web:"",logo:""};
-let settings = Object.assign({},DEFAULT_SETTINGS);
-function loadSettings(){ try{ const s=localStorage.getItem("awm-settings"); if(s) settings=Object.assign({},DEFAULT_SETTINGS,JSON.parse(s)); }catch(e){} }
-function saveSettings(){ try{ localStorage.setItem("awm-settings",JSON.stringify(settings)); }catch(e){} }
-
-/* ============ HELPERS ============ */
-const $ = s => document.querySelector(s);
-const uid = () => Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
-function h(tag, attrs, ...kids){
-  const el = document.createElement(tag);
+/* ================= UTILS ================= */
+const $=s=>document.querySelector(s);
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+function h(tag,attrs,...kids){
+  const el=document.createElement(tag);
   for(const k in (attrs||{})){
-    const v = attrs[k];
+    const v=attrs[k];
     if(k==="class") el.className=v;
     else if(k.startsWith("on")) el.addEventListener(k.slice(2),v);
-    else if(v!==false && v!==null && v!==undefined) el.setAttribute(k,v===true?"":v);
+    else if(v!==false&&v!==null&&v!==undefined) el.setAttribute(k,v===true?"":v);
   }
   kids.flat().forEach(c=>{ if(c===null||c===undefined||c===false) return; el.append(c.nodeType?c:document.createTextNode(String(c))); });
   return el;
 }
-function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function nl(s){ return esc(s).replace(/\n/g,"<br>"); }
-let dl=null;
-function toast(msg){ const t=h("div",{class:"toast noprint",role:"status"},msg); document.body.append(t); setTimeout(()=>t.remove(),4500); }
-function slug(x){ return String(x||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||"client"; }
-async function saveFile(filename,data){
-  const type=filename.endsWith(".json")?"application/json":filename.endsWith(".html")?"text/html":"text/plain";
-  if(dl){
-    try{ await dl.save({filename,data}); toast("Saved."); }
-    catch(e){ const c=e&&e.code; toast(c==="declined"?"Save cancelled.":"Could not save ("+(c||"error")+"). Use Text version instead."); }
-    return;
-  }
-  const blob=new Blob([data],{type});
-  try{
-    const file=new File([blob],filename,{type});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:filename}); toast("Shared."); return; }
-  }catch(e){ if(e&&e.name==="AbortError"){ toast("Save cancelled."); return; } }
-  try{
-    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; document.body.append(a); a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },3000); toast("Downloaded. Check your Files or Downloads.");
-  }catch(e){ toast("Could not save. Use Text version instead."); }
-}
-function exportDoc(bodyHTML,title){
-  const css=document.querySelector("style").textContent;
-  return "<!DOCTYPE html><html lang=\"en\" data-theme=\"light\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>"+esc(title)+"</title><style>"+css+
-  "\nbody{background:#fff}.wrap{padding-bottom:20px}.printbar{padding:12px 0}.printbar button{min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid #1d5946;background:#1d5946;color:#fff;font-weight:600;font-size:16px}</style></head><body><div class=\"wrap\"><div class=\"printbar noprint\"><button onclick=\"window.print()\">Print or save as PDF</button></div><div class=\"report\">"+bodyHTML+"</div></div></body></html>";
-}
-function saveBackup(list){
-  const payload=JSON.stringify({app:"awm-assess",version:1,saved:new Date().toISOString(),settings:settings,jobs:list});
-  saveFile("awm-backup-"+today()+".json",payload);
-}
-async function restoreBackup(file){
-  try{
-    const data=JSON.parse(await file.text());
-    if(!data||data.app!=="awm-assess"||!Array.isArray(data.jobs)) throw new Error("bad");
-    let n=0;
-    for(const j of data.jobs){ if(j&&j.id&&j.info&&j.answers){ if(!j.actions)j.actions=[]; await DB.put(j); n++; } }
-    if(data.settings&&!settings.logo&&data.settings.logo){ settings.logo=data.settings.logo; saveSettings(); }
-    jobs=await DB.all(); render(); toast("Restored "+n+" assessment"+(n===1?"":"s")+".");
-  }catch(e){ toast("That file isn't a valid backup."); }
-}
-function today(){ try{ return new Date().toLocaleDateString("en-CA"); }catch(e){ return new Date().toISOString().slice(0,10); } }
-function allItems(){ const out=[]; SECTIONS.forEach(s=>s.items.forEach(it=>out.push({it,s}))); return out; }
-function newJob(){
-  return {id:uid(),created:Date.now(),updated:Date.now(),
-    info:{client:"",phone:"",email:"",address:"",pid:"",assessor:"",date:today(),weather:"",ownerAuth:OPTS.ownerAuth[0],burn:OPTS.burn[3],
-      propType:"",roof:"",siding:"",deck:"",slope:"",woods:"",notes:""},
-    answers:{},esc:{},escNotes:{},actions:[],summary:""};
-}
-function ans(id){ return job.answers[id] || (job.answers[id]={r:"",note:"",photos:[],flag:false}); }
-const SVG_LOGO = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder logo"><circle cx="32" cy="32" r="30" fill="#1d5946"/><path d="M32 10c2 9 11 13 11 24a11 11 0 0 1-22 0c0-6 3-9 6-13 1 3 3 5 4 5-1-6-1-11 1-16z" fill="#ffffff"/><path d="M32 39c1 3 4 5 4 8a4 4 0 0 1-8 0c0-3 3-5 4-8z" fill="#e8a33d"/></svg>';
-function logoHTML(){ return settings.logo?`<img src="${esc(settings.logo)}" alt="${esc(settings.company)} logo">`:SVG_LOGO; }
-function logoEl(){ const d=h("span",{style:"display:contents"}); d.innerHTML=logoHTML(); return d; }
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function nl(s){return esc(s).replace(/\n/g,"<br>");}
+const num=v=>{const n=parseFloat(v);return isFinite(n)?n:0;};
+const money=n=>{n=+n||0;return (n<0?"-":"")+"$"+Math.abs(n).toLocaleString("en-CA",{minimumFractionDigits:2,maximumFractionDigits:2});};
+const r5=n=>Math.round(n/5)*5;
+const cents=n=>Math.round((+n||0)*100)/100;
+function today(){try{return new Date().toLocaleDateString("en-CA");}catch(e){return new Date().toISOString().slice(0,10);}}
+function addDays(d,n){const t=new Date((d||today())+"T12:00:00");t.setDate(t.getDate()+n);return t.toLocaleDateString("en-CA");}
+function daysBetween(a,b){return Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/86400000);}
+function fmtDate(d){if(!d)return "";try{return new Date(d+"T12:00:00").toLocaleDateString("en-CA",{year:"numeric",month:"long",day:"numeric"});}catch(e){return d;}}
+function slug(x){return String(x||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||"client";}
+function allItems(){const out=[];SECTIONS.forEach(s=>s.items.forEach(it=>out.push({it,s})));return out;}
+function itemOf(id){const x=allItems().find(y=>y.it.id===id);return x?x.it:null;}
+function secOfItem(id){const x=allItems().find(y=>y.it.id===id);return x?x.s:null;}
 function readImage(file,max,type,q){
   return new Promise((res,rej)=>{
     const fr=new FileReader();
-    fr.onload=()=>{
-      const img=new Image();
-      img.onload=()=>{
-        const sc=Math.min(1,max/Math.max(img.width,img.height));
-        const w=Math.round(img.width*sc), hh=Math.round(img.height*sc);
-        const c=document.createElement("canvas"); c.width=w; c.height=hh;
-        c.getContext("2d").drawImage(img,0,0,w,hh);
-        res(c.toDataURL(type,q));
-      };
-      img.onerror=rej; img.src=fr.result;
-    };
-    fr.onerror=rej; fr.readAsDataURL(file);
+    fr.onload=()=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,max/Math.max(img.width,img.height));const w=Math.round(img.width*sc),hh=Math.round(img.height*sc);const c=document.createElement("canvas");c.width=w;c.height=hh;c.getContext("2d").drawImage(img,0,0,w,hh);res(c.toDataURL(type,q));};img.onerror=rej;img.src=fr.result;};
+    fr.onerror=rej;fr.readAsDataURL(file);
   });
 }
 
-/* ============ SCORING AND FLAGS ============ */
-function computeResult(j){
-  let got=0,tot=0,rated=0,required=0,unanswered=0;
-  const flags=[];
-  allItems().forEach(({it,s})=>{
-    const a=j.answers[it.id]||{};
-    required++;
-    if(!a.r){ unanswered++; }
-    if(a.r==="g"||a.r==="f"||a.r==="p"){
-      rated++; const pts=a.r==="g"?100:a.r==="f"?50:0;
-      got+=pts*it.w; tot+=100*it.w;
+/* ================= STORAGE & SETTINGS ================= */
+const DB={
+  db:null,mem:new Map(),ok:false,
+  async init(){try{this.db=await new Promise((res,rej)=>{const r=indexedDB.open("awm-assess",1);r.onupgradeneeded=()=>r.result.createObjectStore("jobs",{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});this.ok=true;}catch(e){this.db=null;this.ok=false;}},
+  store(mode){return this.db.transaction("jobs",mode).objectStore("jobs");},
+  all(){if(!this.db)return Promise.resolve([...this.mem.values()]);return new Promise(res=>{try{const q=this.store("readonly").getAll();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res([]);}catch(e){res([]);}});},
+  put(j){if(!this.db){this.mem.set(j.id,j);return Promise.resolve();}return new Promise(res=>{try{const q=this.store("readwrite").put(j);q.onsuccess=()=>res();q.onerror=()=>res();}catch(e){res();}});},
+  del(id){if(!this.db){this.mem.delete(id);return Promise.resolve();}return new Promise(res=>{try{const q=this.store("readwrite").delete(id);q.onsuccess=()=>res();q.onerror=()=>res();}catch(e){res();}});}
+};
+const DEFAULT_SETTINGS={
+  company:"Atlantic Wildfire Mitigation & Co",legal:"",tagline:"Property wildfire readiness",phone:"(902) 237-8909",email:"mitigation@atlanticwildfire.com",web:"atlanticwildfire.com",logo:"",
+  rates:{assessor:65,crew2:120,crew3:215},ratesConfirmed:false,matMarkup:15,subMarkup:15,minCharge:250,travel:75,
+  hstOn:false,hstNo:"",hstRate:14,
+  depositPct:50,depositOver:1000,balanceDays:14,interestMonthly:1.5,quoteDays:30,
+  payText:"",nextQuote:1,nextInvoice:1,
+  targets:{comb:1.5,conif:10,space:3}
+};
+let settings=JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+function loadSettings(){
+  try{
+    const s=localStorage.getItem("awm-settings-v2");
+    if(s){const p=JSON.parse(s);settings=Object.assign({},DEFAULT_SETTINGS,p);settings.rates=Object.assign({},DEFAULT_SETTINGS.rates,p.rates||{});settings.targets=Object.assign({},DEFAULT_SETTINGS.targets,p.targets||{});}
+    else{const o=localStorage.getItem("awm-settings");if(o){const p=JSON.parse(o);["company","tagline","phone","email","web","logo"].forEach(k=>{if(p[k])settings[k]=p[k];});}}
+  }catch(e){}
+}
+function saveSettings(){try{localStorage.setItem("awm-settings-v2",JSON.stringify(settings));}catch(e){}}
+
+/* ================= LOGO ================= */
+const TREE="M50 8L70 36H60L78 60H64L84 82H16L36 60H22L40 36H30Z";
+function markSVG(mode){
+  const c=mode==="dark"?{r1:"#7FB6D1",r2:"#D8C7A6",d:"#9CC5B5",i:"#16352C"}:mode==="var"?{r1:"var(--logo-r1)",r2:"var(--logo-r2)",d:"var(--logo-disc)",i:"var(--logo-inner)"}:{r1:"#2E6F8E",r2:"#9CC5B5",d:"#1F4A3D",i:"#FFFFFF"};
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo"><circle cx="50" cy="50" r="47" fill="none" style="stroke:${c.r1}" stroke-width="4"/><circle cx="50" cy="50" r="38" fill="none" style="stroke:${c.r2}" stroke-width="3" stroke-dasharray="6 5"/><circle cx="50" cy="50" r="29" style="fill:${c.d}"/><g transform="translate(25 26) scale(.5)"><path d="${TREE}" style="fill:${c.i}"/></g></svg>`;
+}
+function logoHTML(mode){return settings.logo?`<img src="${esc(settings.logo)}" alt="${esc(settings.company)} logo">`:markSVG(mode||"light");}
+function logoEl(){const d=h("span",{style:"display:contents"});d.innerHTML=logoHTML("var");return d;}
+
+/* ================= MODEL ================= */
+function newJob(){
+  return migrate({id:uid(),created:Date.now(),updated:Date.now(),info:{date:today()}});
+}
+function migrate(j){
+  j.info=Object.assign({client:"",phone:"",email:"",address:"",pid:"",assessor:"Daniel Bowers",date:today(),weather:"",ownerAuth:OPTS.ownerAuth[0],burn:OPTS.burn[3],propType:"",roof:"",siding:"",deck:"",slope:"",woods:"",notes:"",access:"",nextVisit:"",workDate:""},j.info||{});
+  j.answers=j.answers||{};j.esc=j.esc||{};j.escNotes=j.escNotes||{};j.actions=j.actions||[];j.summary=j.summary||"";
+  j.meas=j.meas||{};j.quote=j.quote||null;
+  j.work=Object.assign({tasks:{},hours:[],notes:"",signoff:null,started:"",finished:"",timerStart:0,crewSize:2,crewNames:""},j.work||{});
+  j.work.tasks=j.work.tasks||{};j.work.hours=j.work.hours||[];
+  j.invoices=j.invoices||[];j.baseline=j.baseline||null;j.type=j.type||"assessment";
+  j.actions.forEach(ensureAction);
+  return j;
+}
+function ensureAction(a){
+  const est=ITEM_EST[a.itemId]||{};
+  if(a.who===undefined){a.who=est.w||(a.effort==="Homeowner"?"Homeowner":a.effort==="Arborist"?"Arborist":a.effort==="Other"?"Other":"Crew");}
+  if(a.include===undefined)a.include=(a.who==="Crew");
+  if(a.hrs===undefined)a.hrs=est.h||0;
+  if(a.crew===undefined)a.crew=est.c||"crew2";
+  if(a.mat===undefined)a.mat=est.m||0;
+  if(a.sub===undefined)a.sub=est.s||0;
+  if(a.disp===undefined)a.disp=est.d||0;
+  if(a.tbd===undefined)a.tbd=!!est.q;
+  if(a.matNote===undefined)a.matNote="";
+}
+function ans(id){return job.answers[id]||(job.answers[id]={r:"",note:"",photos:[],flag:false});}
+function syncActions(j){
+  const wanted=[];
+  allItems().forEach(({it,s})=>{const a=j.answers[it.id];if(a&&(a.r==="p"||a.r==="f"))wanted.push({it,s,a});});
+  const keep=j.actions.filter(x=>!x.auto||wanted.some(w=>w.it.id===x.itemId));
+  wanted.forEach(({it,s,a})=>{
+    if(!keep.some(x=>x.auto&&x.itemId===it.id)){
+      const na={id:uid(),auto:true,itemId:it.id,sec:s.name,text:it.fix,prio:a.r==="p"?"High":"Medium"};
+      ensureAction(na);keep.push(na);
     }
-    if(a.r==="p"&&it.w===3) flags.push({kind:"Priority item rated Poor",text:it.t,sec:s.name,note:a.note});
-    if(a.flag) flags.push({kind:"Flagged for human review",text:it.t,sec:s.name,note:a.note});
   });
-  ESC.forEach(e=>{ if(j.esc[e.id]) flags.push({kind:"Escalation",text:e.t,extra:e.g,note:j.escNotes[e.id]||""}); });
-  if(j.info.ownerAuth!==OPTS.ownerAuth[0]) flags.push({kind:"Authorization",text:"Owner authorization: "+j.info.ownerAuth,extra:"Confirm owner permission before quoting or working."});
-  if(j.info.burn===OPTS.burn[2]||j.info.burn===OPTS.burn[3]) flags.push({kind:"Burn status",text:"Burn map status: "+j.info.burn,extra:"Check the provincial burn map and any woods-access restriction."});
-  const pct = tot? Math.round(got/tot*100):null;
-  let level = pct===null?"Not enough data":pct>=80?"Low":pct>=60?"Moderate":pct>=40?"High":"Extreme";
-  const critPoor = flags.some(f=>f.kind==="Priority item rated Poor");
+  j.actions=keep;
+}
+/* measurement status */
+function measStatus(m,val){
+  if(val===undefined||val===null||val==="")return {s:"none"};
+  if(!m.t)return {s:"info"};
+  const tgt=+settings.targets[m.t];
+  if(!isFinite(tgt)||tgt<=0)return {s:"info"};
+  return +val>=tgt?{s:"ok",t:tgt}:{s:"below",t:tgt};
+}
+function computeResult(j){
+  let got=0,tot=0,rated=0,required=0,unanswered=0;const flags=[];
+  allItems().forEach(({it,s})=>{
+    const a=j.answers[it.id]||{};required++;
+    if(!a.r)unanswered++;
+    if(a.r==="g"||a.r==="f"||a.r==="p"){rated++;const pts=a.r==="g"?100:a.r==="f"?50:0;got+=pts*it.w;tot+=100*it.w;}
+    if(a.r==="p"&&it.w===3)flags.push({kind:"Priority item rated Poor",text:it.t,sec:s.name,note:a.note});
+    if(a.flag)flags.push({kind:"Flagged for human review",text:it.t,sec:s.name,note:a.note});
+  });
+  SECTIONS.forEach(s=>(s.meas||[]).forEach(m=>{const st=measStatus(m,(j.meas||{})[m.k]);if(st.s==="below")flags.push({kind:"Measurement below target",text:m.l+": "+j.meas[m.k]+" "+m.u+" (target at least "+st.t+" "+m.u+")"});}));
+  ESC.forEach(e=>{if(j.esc[e.id])flags.push({kind:"Escalation",text:e.t,extra:e.g,note:j.escNotes[e.id]||""});});
+  if(j.info.ownerAuth!==OPTS.ownerAuth[0])flags.push({kind:"Authorization",text:"Owner authorization: "+j.info.ownerAuth,extra:"Confirm owner permission before quoting or working."});
+  if(j.info.burn===OPTS.burn[2]||j.info.burn===OPTS.burn[3])flags.push({kind:"Burn status",text:"Burn map status: "+j.info.burn,extra:"Check the provincial burn map and any woods-access restriction."});
+  const pct=tot?Math.round(got/tot*100):null;
+  let level=pct===null?"Not enough data":pct>=80?"Low":pct>=60?"Moderate":pct>=40?"High":"Extreme";
+  const critPoor=flags.some(f=>f.kind==="Priority item rated Poor");
   const order=["Low","Moderate","High","Extreme"];
-  if(critPoor && level!=="Not enough data" && order.indexOf(level)<2) level="High";
+  if(critPoor&&level!=="Not enough data"&&order.indexOf(level)<2)level="High";
   return {pct,level,rated,required,unanswered,flags,critPoor};
 }
-function levelClass(l){ return l==="Low"?"g":l==="Moderate"?"f":l==="Not enough data"?"n":"p"; }
+function levelClass(l){return l==="Low"?"g":l==="Moderate"?"f":l==="Not enough data"?"n":"p";}
 
-/* ============ STATE ============ */
-let job=null, jobs=[], tab="info", view="jobs", reportMode="client", saveTimer=null, scrollTarget=null;
-function save(){
-  clearTimeout(saveTimer);
-  saveTimer=setTimeout(async()=>{ if(!job) return; job.updated=Date.now(); await DB.put(job); },350);
+/* ================= PRICING ================= */
+const rateOf=k=>+settings.rates[k]||0;
+function actionPrice(a){
+  if(a.who==="Homeowner")return 0;
+  return num(a.hrs)*rateOf(a.crew)+num(a.mat)*(1+settings.matMarkup/100)+num(a.sub)*(1+settings.subMarkup/100)+num(a.disp);
 }
-function go(v,t){ if(v) view=v; if(t) tab=t; render(); window.scrollTo(0,0); }
-
-/* ============ CHROME ============ */
-function brandBox(sub){
-  return h("div",{class:"brandbox"},logoEl(),h("div",{class:"t"},h("b",{},settings.company||"Your company"),h("span",{},sub)));
+function costBand(a){
+  if(a.who==="Homeowner")return "Do it yourself";
+  const p=actionPrice(a);
+  if(p<=0)return "Needs quote";
+  return p<100?"Under $100":p<500?"$100 to $500":p<2000?"$500 to $2,000":"Over $2,000";
 }
-function renderChrome(){
-  const c=$("#chrome"); c.textContent="";
-  const wrap=h("div",{class:"wrap"});
-  const bar=h("div",{class:"bar"});
-  if(view==="jobs"){
-    bar.append(brandBox(settings.tagline||"Property assessment"));
-    bar.append(h("button",{class:"btn small",onclick:()=>go("settings")},"Settings"),h("button",{class:"btn small solid",onclick:startNew},"New"));
-  } else if(view==="settings"){
-    bar.append(brandBox("Settings"));
-    bar.append(h("button",{class:"btn small",onclick:goJobs},"Done"));
-  } else {
-    bar.append(brandBox(job&&job.info.client?job.info.client:"Unnamed client"));
-    bar.append(h("button",{class:"btn small",onclick:goJobs},"All jobs"));
-    if(view==="form") bar.append(h("button",{class:"btn small solid",onclick:()=>go("report")},"Report"));
-    if(view==="report") bar.append(h("button",{class:"btn small solid",onclick:()=>go("form")},"Edit"));
+function includedActions(j){return j.actions.filter(a=>a.include&&a.who!=="Homeowner"&&a.text);}
+function nextQuoteNo(){const n=settings.nextQuote++;saveSettings();return "Q-"+new Date().getFullYear()+"-"+String(n).padStart(4,"0");}
+function nextInvoiceNo(){const n=settings.nextInvoice++;saveSettings();return "INV-"+new Date().getFullYear()+"-"+String(n).padStart(4,"0");}
+function buildLines(j){
+  const lines=[];
+  includedActions(j).forEach(a=>{const p=actionPrice(a);lines.push({id:uid(),actionId:a.id,desc:a.text,amount:r5(p),tbd:p<=0});});
+  const custom=(j.quote&&j.quote.lines||[]).filter(l=>!l.actionId&&!l.fixed);
+  const fixedBase=lines.reduce((s,l)=>s+(l.tbd?0:l.amount),0)+custom.reduce((s,l)=>s+(l.tbd?0:num(l.amount)),0);
+  if(lines.length&&settings.travel>0)lines.push({id:uid(),desc:"Travel and mobilization",amount:cents(settings.travel),fixed:true});
+  const sub=fixedBase+(lines.length&&settings.travel>0?settings.travel:0);
+  if(settings.minCharge>0&&sub>0&&sub<settings.minCharge)lines.push({id:uid(),desc:"Minimum charge adjustment",amount:cents(settings.minCharge-sub),fixed:true});
+  return lines.concat(custom);
+}
+function ensureQuote(j){
+  if(!j.quote){j.quote={number:nextQuoteNo(),date:today(),validDays:settings.quoteDays,status:"draft",lines:[],notes:"",sentDate:"",acceptedName:"",acceptedDate:"",signature:""};}
+  return j.quote;
+}
+function quoteTotals(q){
+  const lines=(q&&q.lines)||[];
+  const sub=cents(lines.reduce((s,l)=>s+(l.tbd?0:num(l.amount)),0));
+  const rate=settings.hstOn?settings.hstRate:0;
+  const hst=cents(sub*rate/100);const total=cents(sub+hst);
+  const dep=sub>settings.depositOver?cents(Math.round(total*settings.depositPct)/100):0;
+  return {sub,hst,total,dep,balance:cents(total-dep),tbd:lines.some(l=>l.tbd)};
+}
+function makeInvoice(j,type){
+  const q=j.quote;if(!q)return null;
+  const t=quoteTotals(q);
+  const dueDep=j.invoices.filter(i=>i.type==="deposit").reduce((s,i)=>s+i.amount,0);
+  let amount=type==="deposit"?t.dep:cents(t.total-dueDep);
+  if(amount<=0)return null;
+  const rate=settings.hstOn?settings.hstRate:0;
+  const sub=cents(amount/(1+rate/100));const hst=cents(amount-sub);
+  const issued=today();
+  const due=type==="deposit"?addDays(issued,7):addDays(j.work.finished||issued,settings.balanceDays);
+  const inv={id:uid(),number:nextInvoiceNo(),type,issued,due,amount,sub,hst,payments:[],
+    desc:type==="deposit"?"Deposit ("+settings.depositPct+"%) for quote "+q.number:"Balance for work described in quote "+q.number,notes:""};
+  j.invoices.push(inv);return inv;
+}
+const invPaid=i=>cents((i.payments||[]).reduce((s,p)=>s+num(p.amount),0));
+const invBal=i=>cents(i.amount-invPaid(i));
+function invStatus(i){if(invBal(i)<=0.004)return "Paid";if(i.due&&i.due<today())return "Overdue";return "Due";}
+function interestAccrued(i){
+  if(invStatus(i)!=="Overdue")return 0;
+  const days=daysBetween(i.due,today());
+  return cents(invBal(i)*(settings.interestMonthly*12/100)*days/365);
+}
+function stageOf(j){
+  const q=j.quote;
+  if(q&&q.status==="declined")return "declined";
+  if(j.invoices.some(i=>i.type==="final")){
+    const allPaid=j.invoices.every(i=>invBal(i)<=0.004);
+    const t=q?quoteTotals(q):null;
+    const billed=cents(j.invoices.reduce((s,i)=>s+i.amount,0));
+    if(allPaid&&t&&billed>=t.total-0.005)return "paid";
+    return "invoiced";
   }
+  if(j.work.finished)return "complete";
+  if(j.work.started||j.work.hours.length||(j.work.timerStart))return "inprogress";
+  if(q&&q.status==="accepted")return "accepted";
+  if(q&&(q.status==="sent"||q.status==="draft")&&q.lines.length)return "quoted";
+  const r=computeResult(j);
+  return r.rated>0?"assessed":"lead";
+}
+function jobValue(j){return j.quote&&j.quote.status!=="declined"?quoteTotals(j.quote).total:0;}
+function workedMinutes(j){return j.work.hours.reduce((s,x)=>s+num(x.mins),0)+(j.work.timerStart?Math.round((Date.now()-j.work.timerStart)/60000):0);}
+function estHours(j){return includedActions(j).reduce((s,a)=>s+num(a.hrs),0);}
+
+/* ================= STATE ================= */
+let job=null,jobs=[],view="jobs",mode="assess",tab="info",docKind="plan",docInv="",filter="all",search="",saveTimer=null,scrollTarget=null,dl=null,timerInt=null;
+function save(){clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{if(!job)return;job.updated=Date.now();await DB.put(job);},350);}
+function go(o){if(o){if(o.view)view=o.view;if(o.mode)mode=o.mode;if(o.tab)tab=o.tab;if(o.doc)docKind=o.doc;}render();window.scrollTo(0,0);}
+function toast(msg){const t=h("div",{class:"toast noprint",role:"status"},msg);document.body.append(t);setTimeout(()=>t.remove(),4500);}
+
+/* ================= FILES ================= */
+async function saveFile(filename,data){
+  const type=filename.endsWith(".json")?"application/json":filename.endsWith(".html")?"text/html":filename.endsWith(".csv")?"text/csv":filename.endsWith(".ics")?"text/calendar":"text/plain";
+  if(dl){try{await dl.save({filename,data});toast("Saved.");}catch(e){const c=e&&e.code;toast(c==="declined"?"Save cancelled.":"Could not save ("+(c||"error")+"). Use Text version instead.");}return;}
+  const blob=new Blob([data],{type});
+  try{const file=new File([blob],filename,{type});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:filename});toast("Shared.");return;}}
+  catch(e){if(e&&e.name==="AbortError"){toast("Save cancelled.");return;}}
+  try{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},3000);toast("Downloaded. Check your Files or Downloads.");}
+  catch(e){toast("Could not save. Use Text version instead.");}
+}
+function exportDoc(bodyHTML,title){
+  const css=document.getElementById("docss").textContent;
+  return "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>"+esc(title)+"</title><link href=\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap\" rel=\"stylesheet\"><style>"+css+"\nbody{background:#fff;margin:0;padding:0 14px}.wrapx{max-width:860px;margin:0 auto}.printbar{padding:12px 0}.printbar button{min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid #1f4a3d;background:#1f4a3d;color:#fff;font-weight:700;font-size:16px}.report{margin:0;padding:8px 0}</style></head><body><div class=\"wrapx\"><div class=\"printbar noprint\"><button onclick=\"window.print()\">Print or save as PDF</button></div><div class=\"report\">"+bodyHTML+"</div></div></body></html>";
+}
+function showText(t){
+  const ta=h("textarea",{readonly:true},t);
+  const ov=h("div",{class:"overlay",onclick:e=>{if(e.target===ov)ov.remove();}},h("div",{class:"sheet"},h("div",{class:"ttl"},"Text version"),ta,h("div",{class:"row"},h("button",{class:"btn solid",onclick:async()=>{try{await navigator.clipboard.writeText(t);}catch(e){ta.focus();ta.select();}}},"Copy"),h("button",{class:"btn",onclick:()=>ov.remove()},"Close"))));
+  document.body.append(ov);setTimeout(()=>{ta.focus();ta.select();},50);
+}
+function saveBackup(list){saveFile("awm-backup-"+today()+".json",JSON.stringify({app:"awm-assess",version:2,saved:new Date().toISOString(),settings:settings,jobs:list}));}
+async function restoreBackup(file){
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data||data.app!=="awm-assess"||!Array.isArray(data.jobs))throw new Error("bad");
+    let n=0;
+    for(const j of data.jobs){if(j&&j.id&&j.info&&j.answers){await DB.put(migrate(j));n++;}}
+    if(data.settings){const cur=settings;const inc=data.settings;if(!cur.logo&&inc.logo)cur.logo=inc.logo;cur.nextQuote=Math.max(cur.nextQuote,inc.nextQuote||1);cur.nextInvoice=Math.max(cur.nextInvoice,inc.nextInvoice||1);saveSettings();}
+    jobs=(await DB.all()).map(migrate);render();toast("Restored "+n+" job"+(n===1?"":"s")+".");
+  }catch(e){toast("That file isn't a valid backup.");}
+}
+function exportCSV(list){
+  const rows=[["Invoice","Type","Client","Issued","Due","Subtotal","HST","Total","Paid","Balance","Status","Payments"]];
+  list.forEach(j=>(j.invoices||[]).forEach(i=>rows.push([i.number,i.type,j.info.client,i.issued,i.due,i.sub.toFixed(2),i.hst.toFixed(2),i.amount.toFixed(2),invPaid(i).toFixed(2),invBal(i).toFixed(2),invStatus(i),(i.payments||[]).map(p=>p.date+" "+p.method+" "+num(p.amount).toFixed(2)).join("; ")])));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c==null?"":c).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  saveFile("awm-invoices-"+today()+".csv",csv);
+}
+function icsFor(j){
+  const d=(j.info.nextVisit||"").replace(/-/g,"");if(!d)return "";
+  const d2=addDays(j.info.nextVisit,1).replace(/-/g,"");
+  const stamp=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+  const clean=s=>String(s||"").replace(/[\r\n,;]/g," ");
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//AWM Field App//EN","BEGIN:VEVENT","UID:"+j.id+"@awm","DTSTAMP:"+stamp,"DTSTART;VALUE=DATE:"+d,"DTEND;VALUE=DATE:"+d2,"SUMMARY:Wildfire property check: "+clean(j.info.client),"DESCRIPTION:"+clean("Follow-up visit. "+j.info.address+" "+j.info.phone),"BEGIN:VALARM","TRIGGER:-P7D","ACTION:DISPLAY","DESCRIPTION:Follow-up visit in one week","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+}
+
+/* ================= CHROME ================= */
+function brandBox(sub){return h("div",{class:"brandbox"},logoEl(),h("div",{class:"t"},h("b",{},settings.company||"Your company"),h("span",{},sub)));}
+function renderChrome(){
+  const c=$("#chrome");c.textContent="";
+  const wrap=h("div",{class:"wrap"});const bar=h("div",{class:"bar"});
+  if(view==="jobs"){bar.append(brandBox(settings.tagline||"Field app"),h("button",{class:"btn small",onclick:()=>go({view:"settings"})},"Settings"),h("button",{class:"btn small solid",onclick:startNew},"New"));}
+  else if(view==="settings"){bar.append(brandBox("Settings"),h("button",{class:"btn small",onclick:goJobs},"Done"));}
+  else{bar.append(brandBox(job&&job.info.client?job.info.client:"Unnamed client"),h("span",{class:"pill t"},STAGES[stageOf(job)]),h("button",{class:"btn small",onclick:goJobs},"All jobs"));}
   wrap.append(bar);
-  if(view==="form"){
-    const res=computeResult(job);
-    wrap.append(h("div",{class:"prog","aria-label":"Items rated"},h("i",{style:"width:"+Math.round(res.rated/res.required*100)+"%"})));
-    const tabs=h("div",{class:"tabs"});
-    TABS.forEach(t=>{
-      let sm="", alert=false;
-      if(t.sec){
-        const done=t.sec.items.filter(i=>(job.answers[i.id]||{}).r).length;
-        sm=done+"/"+t.sec.items.length;
-        alert=t.sec.items.some(i=>{const a=job.answers[i.id]||{};return a.flag||(a.r==="p"&&i.w===3);});
-      } else if(t.id==="esc"){
-        const n=ESC.filter(e=>job.esc[e.id]).length; sm=n?n+" flagged":"none"; alert=n>0;
-      } else if(t.id==="plan"){
-        sm=res.flags.length?res.flags.length+" flags":""; alert=res.flags.length>0;
-      }
-      tabs.append(h("button",{class:"tab"+(tab===t.id?" on":"")+(alert&&tab!==t.id?" alert":""),onclick:()=>go(null,t.id)},t.label,sm?h("small",{},sm):null));
-    });
-    wrap.append(tabs);
+  if(view==="job"){
+    const md=h("div",{class:"modes"});
+    [["assess","Assess"],["quote","Quote"],["work","Work"],["bill","Bill"],["docs","Docs"]].forEach(([k,l])=>md.append(h("button",{class:mode===k?"on":"",onclick:()=>go({mode:k})},l)));
+    wrap.append(md);
+    if(mode==="assess"){
+      const res=computeResult(job);
+      wrap.append(h("div",{class:"prog","aria-label":"Items rated"},h("i",{style:"width:"+Math.round(res.rated/res.required*100)+"%"})));
+      const tabs=h("div",{class:"tabs"});
+      TABS.forEach(t=>{
+        let sm="",alert=false;
+        if(t.sec){const done=t.sec.items.filter(i=>(job.answers[i.id]||{}).r).length;sm=done+"/"+t.sec.items.length;alert=t.sec.items.some(i=>{const a=job.answers[i.id]||{};return a.flag||(a.r==="p"&&i.w===3);});}
+        else if(t.id==="esc"){const n=ESC.filter(e=>job.esc[e.id]).length;sm=n?n+" flagged":"none";alert=n>0;}
+        else if(t.id==="plan"){sm=res.flags.length?res.flags.length+" flags":"";alert=res.flags.length>0;}
+        tabs.append(h("button",{class:"tab"+(tab===t.id?" on":"")+(alert&&tab!==t.id?" alert":""),onclick:()=>go({tab:t.id})},t.label,sm?h("small",{},sm):null));
+      });
+      wrap.append(tabs);
+    }
   }
   c.append(wrap);
 }
-function refreshChrome(){ if(view==="form") renderChrome(); }
+function refreshChrome(){if(view==="job"&&mode==="assess")renderChrome();}
 function renderNav(){
-  const n=$("#nav"); n.textContent="";
-  if(view!=="form"){ n.style.display="none"; return; }
+  const n=$("#nav");n.textContent="";
+  if(!(view==="job"&&mode==="assess")){n.style.display="none";return;}
   n.style.display="block";
   const idx=TABS.findIndex(t=>t.id===tab);
-  const prev=idx>0?TABS[idx-1]:null, next=idx<TABS.length-1?TABS[idx+1]:null;
-  n.append(h("div",{class:"in"},
-    prev?h("button",{class:"btn",onclick:()=>go(null,prev.id)},"Back"):h("span"),
-    next?h("button",{class:"btn solid",onclick:()=>go(null,next.id)},"Next: "+next.label):h("button",{class:"btn solid",onclick:()=>go("report")},"Preview report")));
+  const prev=idx>0?TABS[idx-1]:null,next=idx<TABS.length-1?TABS[idx+1]:null;
+  n.append(h("div",{class:"in"},prev?h("button",{class:"btn",onclick:()=>go({tab:prev.id})},"Back"):h("span"),next?h("button",{class:"btn solid",onclick:()=>go({tab:next.id})},"Next: "+next.label):h("button",{class:"btn solid",onclick:()=>go({mode:"quote"})},"Go to quote")));
 }
-
-/* ============ VIEWS ============ */
 function render(){
-  renderChrome(); renderNav();
-  const m=$("#main"); m.textContent="";
-  if(view==="jobs") renderJobs(m);
-  else if(view==="settings") renderSettings(m);
-  else if(view==="form") renderForm(m);
-  else renderReport(m);
-  if(scrollTarget){ const el=document.getElementById(scrollTarget); scrollTarget=null; if(el) setTimeout(()=>el.scrollIntoView({block:"center"}),30); }
-}
-async function goJobs(){ if(job) await DB.put(job); jobs=await DB.all(); job=null; go("jobs"); }
-function startNew(){ job=newJob(); DB.put(job); go("form","info"); }
-
-function renderJobs(m){
-  m.append(h("h2",{},"Assessments"));
-  m.append(h("p",{class:"sub"},"Saved on this device. Tap New to start a site visit."));
-  if(!DB.ok) m.append(h("div",{class:"attn"},h("h3",{},"Storage unavailable"),h("div",{},"Work is kept in memory only and will be lost if you close this page. Use Text version in the report to copy your notes out.")));
-  const list=h("div",{class:"joblist"});
-  const sorted=[...jobs].sort((a,b)=>b.updated-a.updated);
-  if(!sorted.length) list.append(h("div",{class:"card"},"No assessments yet."));
-  sorted.forEach(j=>{
-    const r=computeResult(j);
-    const del=h("button",{class:"btn small warn"},"Delete");
-    let armed=false;
-    del.addEventListener("click",async()=>{
-      if(!armed){ armed=true; del.textContent="Tap again to delete"; setTimeout(()=>{armed=false;del.textContent="Delete";},3000); return; }
-      await DB.del(j.id); jobs=await DB.all(); render();
-    });
-    list.append(h("div",{class:"item"},
-      h("div",{},h("div",{class:"ttl"},j.info.client||"Unnamed client"),
-        h("div",{class:"hint",style:"margin:0"},(j.info.address||"No address")+" · "+(j.info.date||"")),
-        h("span",{class:"pill "+levelClass(r.level)},r.level==="Not enough data"?"In progress":"Attention: "+r.level)),
-      h("div",{class:"row",style:"margin:0"},
-        h("button",{class:"btn small solid",onclick:()=>{job=j; if(!job.actions)job.actions=[]; go("form","info");}},"Open"),del)));
-  });
-  m.append(list);
-  const rf=h("input",{type:"file",accept:".json,application/json",style:"display:none",onchange:async e=>{ const f=e.target.files[0]; e.target.value=""; if(f) await restoreBackup(f); }});
-  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Backup"),h("div",{class:"hint"},"Save a copy of all assessments and settings, or restore from one. Do this after every job."),
-    h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>saveBackup(jobs)},"Save backup"),h("button",{class:"btn small",onclick:()=>rf.click()},"Restore backup"),rf)));
-  m.append(h("p",{class:"notice"},"Draft checklist based on general FireSmart concepts. It is not an official FireSmart form. Check details against the current FireSmart Canada guides before use."));
-}
-
-function renderSettings(m){
-  m.append(h("h2",{},"Company settings"),h("p",{class:"sub"},"These appear on your client report."));
-  const prev=h("div",{class:"logoprev"});
-  function drawPrev(){ prev.textContent=""; const s=h("span",{style:"display:contents"}); s.innerHTML=logoHTML(); prev.append(s,h("div",{},settings.logo?h("div",{class:"hint",style:"margin:0"},"Your logo"):h("span",{class:"tag"},"Placeholder logo"),h("div",{class:"hint",style:"margin:4px 0 0"},settings.logo?"Shown on the client report.":"Replace it with your real logo when you have one."))); }
-  drawPrev();
-  const fi=h("input",{type:"file",accept:"image/*",style:"display:none",onchange:async e=>{
-    const f=e.target.files[0]; if(!f) return;
-    try{ settings.logo=await readImage(f,400,"image/png"); saveSettings(); drawPrev(); renderChrome(); }catch(err){}
-    e.target.value="";
-  }});
-  const sf=(l,k,type)=>h("label",{class:"f"},h("span",{},l),h("input",{type:type||"text",value:settings[k]||"",oninput:e=>{settings[k]=e.target.value;saveSettings();}}));
-  m.append(h("div",{class:"card"},prev,h("div",{class:"row"},
-    h("button",{class:"btn small",onclick:()=>fi.click()},"Upload logo"),
-    settings.logo?h("button",{class:"btn small warn",onclick:()=>{settings.logo="";saveSettings();render();}},"Use placeholder"):null,fi)));
-  m.append(h("div",{class:"card"},sf("Company name","company"),sf("Tagline","tagline"),
-    h("div",{class:"grid2"},sf("Phone","phone","tel"),sf("Email","email","email")),sf("Website","web","url")));
-  m.append(h("p",{class:"notice"},"Settings are saved on this device only."));
-}
-
-function field(label,key,type,opts){
-  const inf=job.info;
-  let input;
-  if(opts){
-    input=h("select",{onchange:e=>{inf[key]=e.target.value;save();refreshChrome();}},
-      h("option",{value:""},"Select…"),
-      opts.map(o=>h("option",{value:o,selected:inf[key]===o},o)));
-  } else {
-    input=h("input",{type:type||"text",value:inf[key]||"",oninput:e=>{inf[key]=e.target.value;save();}});
+  if(timerInt){clearInterval(timerInt);timerInt=null;}
+  renderChrome();renderNav();
+  const m=$("#main");m.textContent="";
+  if(view==="jobs")renderJobs(m);
+  else if(view==="settings")renderSettings(m);
+  else{
+    if(job)syncActions(job);
+    if(mode==="assess")renderAssess(m);
+    else if(mode==="quote")renderQuote(m);
+    else if(mode==="work")renderWork(m);
+    else if(mode==="bill")renderBill(m);
+    else renderDocs(m);
   }
-  return h("label",{class:"f"},h("span",{},label),input);
+  if(scrollTarget){const el=document.getElementById(scrollTarget);scrollTarget=null;if(el)setTimeout(()=>el.scrollIntoView({block:"center"}),30);}
+}
+async function goJobs(){if(job){job.updated=Date.now();await DB.put(job);}jobs=(await DB.all()).map(migrate);job=null;go({view:"jobs"});}
+function openJob(j){job=j;go({view:"job",mode:"assess",tab:"info"});}
+function startNew(){job=newJob();DB.put(job);go({view:"job",mode:"assess",tab:"info"});}
+function newRecheck(from){
+  const j=newJob();
+  ["client","phone","email","address","pid","propType","roof","siding","deck","slope","woods","access"].forEach(k=>{j.info[k]=from.info[k];});
+  j.type="recheck";j.baselineOf=from.id;
+  const r={};allItems().forEach(({it})=>{const a=from.answers[it.id];if(a&&a.r)r[it.id]=a.r;});
+  j.baseline={date:from.info.date,ratings:r,score:computeResult(from).pct,level:computeResult(from).level,meas:Object.assign({},from.meas)};
+  j.info.notes="Re-check visit following the assessment of "+fmtDate(from.info.date)+".";
+  DB.put(j);job=j;go({view:"job",mode:"assess",tab:"info"});
 }
 
-function renderForm(m){
-  if(tab==="info") return renderInfo(m);
-  if(tab==="esc") return renderEsc(m);
-  if(tab==="plan") return renderPlan(m);
+/* ================= JOBS ================= */
+function dashboard(list){
+  let open=0,acc=0,unpaid=0,overdueN=0,overdueAmt=0;const fu=[];
+  list.forEach(j=>{
+    const s=stageOf(j);const q=j.quote;const t=q?quoteTotals(q):null;
+    if(s==="quoted"&&t)open+=t.total;
+    if((s==="accepted"||s==="inprogress"||s==="complete")&&t)acc+=t.total;
+    j.invoices.forEach(i=>{const b=invBal(i);if(b>0.004){unpaid+=b;if(invStatus(i)==="Overdue"){overdueN++;overdueAmt+=b;}}});
+    if(j.info.nextVisit&&j.info.nextVisit>=today()&&j.info.nextVisit<=addDays(today(),30))fu.push(j);
+  });
+  return {open,acc,unpaid,overdueN,overdueAmt,fu};
+}
+function renderJobs(m){
+  const d=dashboard(jobs);
+  m.append(h("div",{class:"stat"},
+    h("div",{},h("b",{},money(d.open)),h("span",{},"Quotes waiting")),
+    h("div",{},h("b",{},money(d.acc)),h("span",{},"Accepted work")),
+    h("div",{},h("b",{},money(d.unpaid)),h("span",{},"Unpaid invoices")),
+    h("div",{},h("b",{},d.overdueN?d.overdueN+" · "+money(d.overdueAmt):"0"),h("span",{},"Overdue"))));
+  if(d.fu.length)m.append(h("div",{class:"okbox"},h("strong",{},"Follow-ups in the next 30 days: "),d.fu.map(j=>(j.info.client||"Unnamed")+" ("+fmtDate(j.info.nextVisit)+")").join(", ")));
+  if(!DB.ok)m.append(h("div",{class:"attn"},h("h3",{},"Storage unavailable"),h("div",{},"Work is kept in memory only and will be lost if you close this page. Save backups often.")));
+  if(!settings.ratesConfirmed)m.append(h("div",{class:"warnbox"},h("strong",{},"Rates are placeholders. "),"Review them in Settings before you send a quote.",h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>go({view:"settings"})},"Open settings"))));
+  const chips=h("div",{class:"chips"});
+  [["all","All"]].concat(STAGE_ORDER.map(s=>[s,STAGES[s]])).forEach(([k,l])=>chips.append(h("button",{class:filter===k?"on":"",onclick:()=>{filter=k;render();}},l)));
+  m.append(h("h2",{},"Jobs"),chips);
+  m.append(h("input",{type:"text",placeholder:"Search name or address",value:search,oninput:e=>{search=e.target.value;drawList();},style:"margin-bottom:12px"}));
+  const list=h("div",{class:"joblist"});m.append(list);
+  function drawList(){
+    list.textContent="";
+    const q=search.trim().toLowerCase();
+    const sorted=[...jobs].sort((a,b)=>b.updated-a.updated).filter(j=>(filter==="all"||stageOf(j)===filter)&&(!q||((j.info.client||"")+" "+(j.info.address||"")).toLowerCase().includes(q)));
+    if(!sorted.length)list.append(h("div",{class:"card"},jobs.length?"No jobs match.":"No jobs yet. Tap New to start a visit."));
+    sorted.forEach(j=>{
+      const r=computeResult(j),s=stageOf(j),val=jobValue(j);
+      const del=h("button",{class:"btn small warn"},"Delete");let armed=false;
+      del.addEventListener("click",async()=>{if(!armed){armed=true;del.textContent="Tap again";setTimeout(()=>{armed=false;del.textContent="Delete";},3000);return;}await DB.del(j.id);jobs=(await DB.all()).map(migrate);render();});
+      list.append(h("div",{class:"item"},
+        h("div",{},h("div",{class:"ttl"},j.info.client||"Unnamed client"),
+          h("div",{class:"hint",style:"margin:0"},(j.info.address||"No address")+" · "+(j.info.date||"")),
+          h("span",{class:"pill t"},STAGES[s]),
+          r.level!=="Not enough data"?h("span",{class:"pill "+levelClass(r.level),style:"margin-left:6px"},"Attention: "+r.level):null,
+          val?h("span",{class:"pill n",style:"margin-left:6px"},money(val)):null,
+          j.type==="recheck"?h("span",{class:"pill n",style:"margin-left:6px"},"Re-check"):null),
+        h("div",{class:"row",style:"margin:0"},h("button",{class:"btn small solid",onclick:()=>openJob(j)},"Open"),del)));
+    });
+  }
+  drawList();
+  const rf=h("input",{type:"file",accept:".json,application/json",style:"display:none",onchange:async e=>{const f=e.target.files[0];e.target.value="";if(f)await restoreBackup(f);}});
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Backup and export"),h("div",{class:"hint"},"Save a backup after every job. The CSV lists invoices and payments for your bookkeeping."),
+    h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>saveBackup(jobs)},"Save backup"),h("button",{class:"btn small",onclick:()=>rf.click()},"Restore backup"),h("button",{class:"btn small",onclick:()=>exportCSV(jobs)},"Invoices CSV"),rf)));
+}
+
+/* ================= SETTINGS ================= */
+function renderSettings(m){
+  m.append(h("h2",{},"Settings"),h("p",{class:"sub"},"Saved on this device. These feed your quotes, invoices and reports."));
+  const sf=(l,get,set,type,opts)=>{
+    const inp=h("input",Object.assign({type:type||"text",value:get()},type==="number"?{step:"any",inputmode:"decimal"}:{}));
+    inp.addEventListener("input",e=>{set(type==="number"?num(e.target.value):e.target.value);saveSettings();});
+    return h("label",{class:"f"},h("span",{},l),inp);
+  };
+  const S=settings;
+  const prev=h("div",{class:"logoprev"});
+  function drawPrev(){prev.textContent="";const s=h("span",{style:"display:contents"});s.innerHTML=logoHTML("var");prev.append(s,h("div",{},h("div",{class:"hint",style:"margin:0"},S.logo?"Your uploaded logo":"Default logo (spruce in zone rings)")));}
+  drawPrev();
+  const fi=h("input",{type:"file",accept:"image/*",style:"display:none",onchange:async e=>{const f=e.target.files[0];if(!f)return;try{S.logo=await readImage(f,400,"image/png");saveSettings();drawPrev();renderChrome();}catch(err){}e.target.value="";}});
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Company"),prev,h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>fi.click()},"Upload logo"),S.logo?h("button",{class:"btn small warn",onclick:()=>{S.logo="";saveSettings();render();}},"Use default"):null,fi),
+    sf("Company name (as shown to clients)",()=>S.company,v=>S.company=v),
+    sf("Legal name (once registered)",()=>S.legal,v=>S.legal=v),
+    sf("Tagline",()=>S.tagline,v=>S.tagline=v),
+    h("div",{class:"grid2"},sf("Phone",()=>S.phone,v=>S.phone=v,"tel"),sf("Email",()=>S.email,v=>S.email=v,"email")),sf("Website",()=>S.web,v=>S.web=v)));
+  const conf=h("input",{type:"checkbox",checked:S.ratesConfirmed,style:"width:26px;height:26px;accent-color:var(--brand)",onchange:e=>{S.ratesConfirmed=e.target.checked;saveSettings();}});
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Pricing"),h("p",{class:"hint"},"Hourly prices are before HST. The starting numbers come from the placeholder pricing model, not from real quotes. Replace them after your pilot jobs."),
+    h("div",{class:"grid3"},sf("Assessor $/h",()=>S.rates.assessor,v=>S.rates.assessor=v,"number"),sf("Crew of 2 $/h",()=>S.rates.crew2,v=>S.rates.crew2=v,"number"),sf("Crew of 3 + chipper $/h",()=>S.rates.crew3,v=>S.rates.crew3=v,"number")),
+    h("div",{class:"grid2"},sf("Materials markup %",()=>S.matMarkup,v=>S.matMarkup=v,"number"),sf("Subcontractor markup %",()=>S.subMarkup,v=>S.subMarkup=v,"number"),sf("Travel and mobilization per job $",()=>S.travel,v=>S.travel=v,"number"),sf("Minimum job charge $",()=>S.minCharge,v=>S.minCharge=v,"number")),
+    h("label",{class:"f",style:"display:flex;gap:10px;align-items:center"},conf,h("span",{},"I have reviewed these rates"))));
+  const hstOn=h("input",{type:"checkbox",checked:S.hstOn,style:"width:26px;height:26px;accent-color:var(--brand)",onchange:e=>{S.hstOn=e.target.checked;saveSettings();}});
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Tax"),h("p",{class:"hint"},"Only charge HST once you are registered. Most sources say Nova Scotia's rate is 14%; confirm with CRA."),
+    h("label",{class:"f",style:"display:flex;gap:10px;align-items:center"},hstOn,h("span",{},"I am registered for HST and charge it")),
+    h("div",{class:"grid2"},sf("HST registration number",()=>S.hstNo,v=>S.hstNo=v),sf("HST rate %",()=>S.hstRate,v=>S.hstRate=v,"number"))));
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Payment terms"),
+    h("div",{class:"grid2"},sf("Deposit %",()=>S.depositPct,v=>S.depositPct=v,"number"),sf("Deposit applies to jobs over $",()=>S.depositOver,v=>S.depositOver=v,"number"),sf("Balance due (days after work)",()=>S.balanceDays,v=>S.balanceDays=v,"number"),sf("Overdue interest % per month",()=>S.interestMonthly,v=>S.interestMonthly=v,"number"),sf("Quote valid (days)",()=>S.quoteDays,v=>S.quoteDays=v,"number")),
+    h("label",{class:"f"},h("span",{},"Payment instructions shown on invoices"),h("textarea",{placeholder:"For example: how clients can pay",oninput:e=>{S.payText=e.target.value;saveSettings();}},S.payText||""))));
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Measurement targets"),h("p",{class:"hint"},"Used to flag measurements below target. These common targets come from Nova Scotia sources. Leave others blank."),
+    h("div",{class:"grid3"},sf("Nearest combustible (m)",()=>S.targets.comb,v=>S.targets.comb=v,"number"),sf("Nearest conifer (m)",()=>S.targets.conif,v=>S.targets.conif=v,"number"),sf("Crown spacing (m)",()=>S.targets.space,v=>S.targets.space=v,"number"))));
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},"Document numbers"),h("div",{class:"grid2"},sf("Next quote number",()=>S.nextQuote,v=>S.nextQuote=Math.max(1,Math.round(v)),"number"),sf("Next invoice number",()=>S.nextInvoice,v=>S.nextInvoice=Math.max(1,Math.round(v)),"number"))));
+  m.append(h("p",{class:"notice"},"Settings are saved on this device only. They are included in backups."));
+}
+
+/* ================= ASSESS ================= */
+function renderAssess(m){
+  if(tab==="info")return renderInfo(m);
+  if(tab==="esc")return renderEsc(m);
+  if(tab==="plan")return renderSummary(m);
   const s=SECTIONS.find(x=>x.id===tab);
   m.append(h("h2",{},s.name),h("p",{class:"sub"},s.sub));
-  const rest=h("button",{class:"btn small",style:"margin-bottom:12px"},"Mark all blank items Good");
-  let armed=false;
-  rest.addEventListener("click",()=>{
-    if(!armed){ armed=true; rest.textContent="Tap again to confirm"; setTimeout(()=>{armed=false;rest.textContent="Mark all blank items Good";},3000); return; }
-    s.items.forEach(it=>{ const a=ans(it.id); if(!a.r) a.r="g"; });
-    save(); render();
-  });
+  m.append(measureCard(s));
+  const rest=h("button",{class:"btn small",style:"margin-bottom:12px"},"Mark all blank items Good");let armed=false;
+  rest.addEventListener("click",()=>{if(!armed){armed=true;rest.textContent="Tap again to confirm";setTimeout(()=>{armed=false;rest.textContent="Mark all blank items Good";},3000);return;}s.items.forEach(it=>{const a=ans(it.id);if(!a.r)a.r="g";});save();render();});
   m.append(rest);
   s.items.forEach(it=>m.append(itemCard(it)));
 }
-
+function measureCard(s){
+  if(!s.meas||!s.meas.length)return h("span");
+  const card=h("div",{class:"card"},h("div",{class:"ttl"},"Measurements"),h("div",{class:"hint"},"Optional. Targets flag automatically where one is set."));
+  s.meas.forEach(mm=>{
+    const status=h("div",{class:"hint",style:"margin:4px 0 0"});
+    const upd=()=>{const st=measStatus(mm,job.meas[mm.k]);status.textContent=st.s==="ok"?"Meets target (at least "+st.t+" "+mm.u+")":st.s==="below"?"Below target (at least "+st.t+" "+mm.u+")":mm.t&&+settings.targets[mm.t]?"Target: at least "+settings.targets[mm.t]+" "+mm.u:"";status.style.color=st.s==="below"?"var(--poor)":st.s==="ok"?"var(--good)":"var(--muted)";};
+    const inp=h("input",{type:"number",step:"any",inputmode:"decimal",value:job.meas[mm.k]===undefined?"":job.meas[mm.k],placeholder:mm.u,oninput:e=>{const v=e.target.value;if(v==="")delete job.meas[mm.k];else job.meas[mm.k]=num(v);upd();save();refreshChrome();}});
+    upd();
+    card.append(h("label",{class:"f"},h("span",{},mm.l+" ("+mm.u+")"),inp,status));
+  });
+  return card;
+}
+function field(label,key,type,opts){
+  const inf=job.info;let input;
+  if(opts){input=h("select",{onchange:e=>{inf[key]=e.target.value;save();refreshChrome();}},h("option",{value:""},"Select…"),opts.map(o=>h("option",{value:o,selected:inf[key]===o},o)));}
+  else input=h("input",{type:type||"text",value:inf[key]||"",oninput:e=>{inf[key]=e.target.value;save();}});
+  return h("label",{class:"f"},h("span",{},label),input);
+}
 function renderInfo(m){
   m.append(h("h2",{},"Visit details"));
-  m.append(h("div",{class:"card"},
-    h("div",{class:"grid2"},field("Client name","client"),field("Phone","phone","tel"),field("Email","email","email"),field("Assessor","assessor")),
-    field("Property address","address"),
-    h("div",{class:"grid2"},field("PID (if known)","pid"),field("Date","date","date"),field("Weather at visit","weather"))));
-  m.append(h("div",{class:"card"},
-    h("div",{class:"grid2"},field("Who is present","ownerAuth",null,OPTS.ownerAuth),field("Burn map status today","burn",null,OPTS.burn))));
+  if(job.baseline)m.append(h("div",{class:"okbox"},h("strong",{},"Re-check visit. "),"Compared with the assessment of "+fmtDate(job.baseline.date)+" (attention level "+job.baseline.level+"). Each item shows its rating from last time."));
+  m.append(h("div",{class:"card"},h("div",{class:"grid2"},field("Client name","client"),field("Phone","phone","tel"),field("Email","email","email"),field("Assessor","assessor")),field("Property address","address"),h("div",{class:"grid2"},field("PID (if known)","pid"),field("Date","date","date"),field("Weather at visit","weather"))));
+  m.append(h("div",{class:"card"},h("div",{class:"grid2"},field("Who is present","ownerAuth",null,OPTS.ownerAuth),field("Burn map status today","burn",null,OPTS.burn)),field("Access notes for the crew (gate, dog, parking)","access")));
   m.append(h("h2",{},"Property basics"));
-  const g=h("div",{class:"card"},h("div",{class:"grid2"}));
-  CTX_FIELDS.forEach(([k,l])=>g.firstChild.append(field(l,k,null,OPTS[k])));
-  m.append(g);
+  const g=h("div",{class:"card"},h("div",{class:"grid2"}));CTX_FIELDS.forEach(([k,l])=>g.firstChild.append(field(l,k,null,OPTS[k])));m.append(g);
   m.append(h("div",{class:"card"},h("label",{class:"f"},h("span",{},"General notes"),h("textarea",{oninput:e=>{job.info.notes=e.target.value;save();}},job.info.notes||""))));
+  const tools=h("div",{class:"card"},h("div",{class:"ttl"},"Follow-up and job tools"),h("div",{class:"grid2",style:"margin-top:8px"},field("Next visit due","nextVisit","date"),field("Planned work date","workDate","date")));
+  tools.append(h("div",{class:"row"},
+    h("button",{class:"btn small",onclick:()=>{const s=icsFor(job);if(!s){toast("Set a next visit date first.");return;}saveFile("follow-up-"+slug(job.info.client)+".ics",s);}},"Add follow-up to calendar"),
+    h("button",{class:"btn small",onclick:()=>{if(!computeResult(job).rated){toast("Rate some items first.");return;}newRecheck(job);}},"Start a re-check visit")));
+  m.append(tools);
 }
-
 function itemCard(it){
   const a=ans(it.id);
   const card=h("div",{class:"item"+(it.w===3?" crit":"")+(a.flag?" flagged":""),id:"item-"+it.id});
   const seg=h("div",{class:"seg"});
-  ["g","f","p","n"].forEach(r=>{
-    seg.append(h("button",{"data-r":r,class:a.r===r?"on":"",onclick:()=>{
-      a.r=a.r===r?"":r;
-      seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.r===a.r));
-      save(); refreshChrome();
-    }},RLABEL[r]));
-  });
+  ["g","f","p","n"].forEach(r=>{seg.append(h("button",{"data-r":r,class:a.r===r?"on":"",onclick:()=>{a.r=a.r===r?"":r;seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.r===a.r));save();refreshChrome();}},RLABEL[r]));});
   const thumbs=h("div",{class:"thumbs"});
-  function drawThumbs(){
-    thumbs.textContent="";
-    a.photos.forEach((p,i)=>{
-      thumbs.append(h("div",{class:"thumb"},h("img",{src:p,alt:"Photo "+(i+1)+" for "+it.t}),
-        h("button",{"aria-label":"Remove photo",onclick:()=>{a.photos.splice(i,1);drawThumbs();save();}},"×")));
-    });
-  }
+  function drawThumbs(){thumbs.textContent="";a.photos.forEach((p,i)=>{thumbs.append(h("div",{class:"thumb"},h("img",{src:p,alt:"Photo "+(i+1)+" for "+it.t}),h("button",{"aria-label":"Remove photo",onclick:()=>{a.photos.splice(i,1);drawThumbs();save();}},"×")));});}
   drawThumbs();
-  const fileIn=h("input",{type:"file",accept:"image/*",multiple:true,style:"display:none",onchange:async e=>{
-    for(const f of e.target.files){ try{ a.photos.push(await readImage(f,1280,"image/jpeg",0.72)); }catch(err){} }
-    e.target.value=""; drawThumbs(); save();
-  }});
-  const flagBtn=h("button",{class:"flagbtn"+(a.flag?" on":""),onclick:()=>{
-    a.flag=!a.flag; flagBtn.classList.toggle("on",a.flag); flagBtn.textContent=a.flag?"Flagged for review":"Flag for review";
-    card.classList.toggle("flagged",a.flag); save(); refreshChrome();
-  }},a.flag?"Flagged for review":"Flag for review");
-  const note=h("textarea",{placeholder:"Notes (what you saw)",oninput:e=>{a.note=e.target.value;save();}},a.note||"");
+  const fileIn=h("input",{type:"file",accept:"image/*",multiple:true,style:"display:none",onchange:async e=>{for(const f of e.target.files){try{a.photos.push(await readImage(f,1280,"image/jpeg",0.72));}catch(err){}}e.target.value="";drawThumbs();save();}});
+  const flagBtn=h("button",{class:"flagbtn"+(a.flag?" on":""),onclick:()=>{a.flag=!a.flag;flagBtn.classList.toggle("on",a.flag);flagBtn.textContent=a.flag?"Flagged for review":"Flag for review";card.classList.toggle("flagged",a.flag);save();refreshChrome();}},a.flag?"Flagged for review":"Flag for review");
+  const note=h("textarea",{placeholder:"Notes (what you saw). Tap the keyboard microphone to dictate.",oninput:e=>{a.note=e.target.value;save();}},a.note||"");
   const noteWrap=h("div",{style:a.note?"":"display:none"},note);
-  const noteBtn=h("button",{class:"btn small",onclick:()=>{ noteWrap.style.display="block"; note.focus(); noteBtn.style.display="none"; }},"Add note");
-  if(a.note) noteBtn.style.display="none";
-  card.append(h("div",{class:"ttl"},it.t),h("div",{class:"hint"},it.h),seg,noteWrap,
-    h("div",{class:"row"},noteBtn,h("button",{class:"btn small",onclick:()=>fileIn.click()},"Add photo"),flagBtn,fileIn),thumbs);
+  const noteBtn=h("button",{class:"btn small",onclick:()=>{noteWrap.style.display="block";note.focus();noteBtn.style.display="none";}},"Add note");if(a.note)noteBtn.style.display="none";
+  const last=job.baseline&&job.baseline.ratings[it.id];
+  card.append(h("div",{class:"ttl"},it.t),last?h("div",{style:"margin:4px 0"},h("span",{class:"pill "+last},"Last visit: "+RLABEL[last])):null,h("div",{class:"hint"},it.h),seg,noteWrap,h("div",{class:"row"},noteBtn,h("button",{class:"btn small",onclick:()=>fileIn.click()},"Add photo"),flagBtn,fileIn),thumbs);
   return card;
 }
-
 function renderEsc(m){
-  m.append(h("h2",{},"Escalation checks"),h("p",{class:"sub"},"Mark Yes for anything that needs the owner or a qualified professional to decide. Yes items appear at the top of the summary and the internal report."));
+  m.append(h("h2",{},"Escalation checks"),h("p",{class:"sub"},"Mark Yes for anything that needs the owner or a qualified professional to decide. Yes items appear in the summary, the crew copy and the internal record."));
   ESC.forEach(e=>{
     const yes=!!job.esc[e.id];
-    const g=h("div",{class:"g"},e.g); g.style.display=yes?"block":"none";
+    const g=h("div",{class:"g"},e.g);g.style.display=yes?"block":"none";
     const seg=h("div",{class:"seg"});
     const by=h("button",{"data-r":"p",class:yes?"on":"",onclick:()=>{job.esc[e.id]=true;by.classList.add("on");bn.classList.remove("on");g.style.display="block";card.classList.add("flagged");save();refreshChrome();}},"Yes");
     const bn=h("button",{"data-r":"g",class:!yes?"on":"",onclick:()=>{job.esc[e.id]=false;bn.classList.add("on");by.classList.remove("on");g.style.display="none";card.classList.remove("flagged");save();refreshChrome();}},"No");
     seg.append(by,bn);
-    const card=h("div",{class:"item"+(yes?" flagged":"")},
-      h("div",{class:"esc"},h("div",{style:"flex:1"},h("div",{class:"ttl"},e.t),g),seg),
-      h("textarea",{placeholder:"Details (optional)",oninput:ev=>{job.escNotes[e.id]=ev.target.value;save();}},job.escNotes[e.id]||""));
+    const card=h("div",{class:"item"+(yes?" flagged":"")},h("div",{class:"esc"},h("div",{style:"flex:1"},h("div",{class:"ttl"},e.t),g),seg),h("textarea",{placeholder:"Details (optional)",oninput:ev=>{job.escNotes[e.id]=ev.target.value;save();}},job.escNotes[e.id]||""));
     m.append(card);
   });
 }
-
-function syncActions(){
-  const wanted=[];
-  allItems().forEach(({it,s})=>{ const a=job.answers[it.id]; if(a&&(a.r==="p"||a.r==="f")) wanted.push({it,s,a}); });
-  const keep=job.actions.filter(x=>!x.auto||wanted.some(w=>w.it.id===x.itemId));
-  wanted.forEach(({it,s,a})=>{
-    if(!keep.some(x=>x.auto&&x.itemId===it.id)) keep.push({id:uid(),auto:true,itemId:it.id,sec:s.name,text:it.fix,effort:it.w===3?"Pro / crew":"Homeowner",cost:"",prio:a.r==="p"?"High":"Medium"});
-  });
-  job.actions=keep;
-}
 function attnBox(res){
-  if(!res.flags.length) return null;
-  const ul=h("ul");
-  res.flags.forEach(f=>ul.append(h("li",{},h("strong",{},f.kind+": "),f.text,f.extra?" — "+f.extra:"",f.note?" (Note: "+f.note+")":"")));
+  if(!res.flags.length)return null;
+  const ul=h("ul");res.flags.forEach(f=>ul.append(h("li",{},h("strong",{},f.kind+": "),f.text,f.extra?" — "+f.extra:"",f.note?" (Note: "+f.note+")":"")));
   return h("div",{class:"attn"},h("h3",{},"Needs human attention ("+res.flags.length+")"),ul);
 }
-function firstBlank(){
-  for(const s of SECTIONS){ for(const it of s.items){ if(!(job.answers[it.id]||{}).r) return {s,it}; } }
-  return null;
-}
-function renderPlan(m){
-  syncActions(); save();
-  const res=computeResult(job);
+function firstBlank(){for(const s of SECTIONS){for(const it of s.items){if(!(job.answers[it.id]||{}).r)return {s,it};}}return null;}
+function renderSummary(m){
+  save();const res=computeResult(job);
   m.append(h("h2",{},"Summary"));
-  if(res.unanswered){
-    m.append(h("div",{class:"warnbox"},h("strong",{},res.unanswered+" items not rated. "),"Unrated items are left out of the client report.",
-      h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>{const b=firstBlank(); if(b){scrollTarget="item-"+b.it.id; go(null,b.s.id);} }},"Go to first blank item"))));
-  }
-  const box=attnBox(res); if(box) m.append(box);
-  m.append(h("div",{class:"card"},
-    h("div",{class:"score"},
-      h("div",{class:"big"},res.pct===null?"–":res.pct+"%"),
-      h("div",{},h("div",{},h("span",{class:"pill "+levelClass(res.level)},res.level==="Not enough data"?"Not enough data":"Attention level: "+res.level)),
-        h("div",{class:"hint",style:"margin:4px 0 0"},res.rated+" of "+res.required+" items rated"))),
-    h("p",{class:"notice",style:"margin-bottom:0"},"Condition score: higher is better. Levels use a draft rubric (Low 80+, Moderate 60–79, High 40–59, Extreme under 40; any priority item rated Poor lifts the level to at least High). Set your own rubric before using this with clients.")));
-  m.append(h("div",{class:"card"},h("label",{class:"f"},h("span",{},"Your summary for the client"),h("textarea",{placeholder:"A short personal note: overall impression and the top things to do first. This appears on the client report.",oninput:e=>{job.summary=e.target.value;save();}},job.summary||""))));
-  m.append(h("h2",{},"Action plan"),h("p",{class:"sub"},"Built from items rated Fair or Poor. Edit, add or remove. This goes to the client."));
+  if(res.unanswered)m.append(h("div",{class:"warnbox"},h("strong",{},res.unanswered+" items not rated. "),"Unrated items are left out of the client copy.",h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>{const b=firstBlank();if(b){scrollTarget="item-"+b.it.id;go({tab:b.s.id});}}},"Go to first blank item"))));
+  const box=attnBox(res);if(box)m.append(box);
+  let progress=null;
+  if(job.baseline){let better=0,worse=0;allItems().forEach(({it})=>{const now=(job.answers[it.id]||{}).r,was=job.baseline.ratings[it.id];const rank={g:3,f:2,p:1};if(now&&was&&rank[now]&&rank[was]){if(rank[now]>rank[was])better++;else if(rank[now]<rank[was])worse++;}});progress=h("div",{class:"okbox"},h("strong",{},"Since the last visit: "),better+" item"+(better===1?"":"s")+" improved, "+worse+" got worse. Score then "+(job.baseline.score===null?"n/a":job.baseline.score+"%")+", now "+(res.pct===null?"n/a":res.pct+"%")+".");}
+  if(progress)m.append(progress);
+  m.append(h("div",{class:"card"},h("div",{class:"score"},h("div",{class:"big"},res.pct===null?"–":res.pct+"%"),h("div",{},h("div",{},h("span",{class:"pill "+levelClass(res.level)},res.level==="Not enough data"?"Not enough data":"Attention level: "+res.level)),h("div",{class:"hint",style:"margin:4px 0 0"},res.rated+" of "+res.required+" items rated"))),h("p",{class:"notice",style:"margin-bottom:0"},"Condition score: higher is better. Levels use a draft rubric (Low 80+, Moderate 60–79, High 40–59, Extreme under 40; any priority item rated Poor lifts the level to at least High). Set your own rubric before relying on it.")));
+  m.append(h("div",{class:"card"},h("label",{class:"f"},h("span",{},"Your summary for the client"),h("textarea",{placeholder:"A short personal note: overall impression and the top things to do first. This appears in the client copy.",oninput:e=>{job.summary=e.target.value;save();}},job.summary||""))));
+  m.append(h("h2",{},"Action plan"),h("p",{class:"sub"},"Built from items rated Fair or Poor. Edit what to do, priority and who does it. Prices are set in the Quote tab."));
   const list=h("div",{class:"card"});
-  function drawActs(){
+  function draw(){
     list.textContent="";
-    if(!job.actions.length) list.append(h("div",{class:"hint"},"No actions yet. Rate items Fair or Poor, or add one."));
-    const ord=[...job.actions].sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio));
-    ord.forEach(a=>{
-      const sel=(arr,key)=>h("select",{onchange:e=>{a[key]=e.target.value;save();}},arr.map(o=>h("option",{value:o,selected:a[key]===o},o||"Cost band")));
-      list.append(h("div",{class:"act"},
-        a.sec?h("div",{class:"hint",style:"margin:0 0 4px"},a.sec):null,
+    if(!job.actions.length)list.append(h("div",{class:"hint"},"No actions yet. Rate items Fair or Poor, or add one."));
+    [...job.actions].sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio)).forEach(a=>{
+      const sel=(arr,key,after)=>h("select",{onchange:e=>{a[key]=e.target.value;if(after)after();save();}},arr.map(o=>h("option",{value:o,selected:a[key]===o},o)));
+      list.append(h("div",{class:"act"},a.sec?h("div",{class:"hint",style:"margin:0 0 4px"},a.sec):null,
         h("textarea",{style:"margin-top:0",oninput:e=>{a.text=e.target.value;save();}},a.text),
-        h("div",{class:"grid2",style:"margin-top:8px"},sel(PRIOS,"prio"),sel(EFFORT,"effort")),
-        h("div",{class:"grid2",style:"margin-top:8px"},sel(COSTS,"cost"),
-          h("button",{class:"btn small warn",onclick:()=>{job.actions=job.actions.filter(x=>x.id!==a.id);drawActs();save();}},"Remove"))));
+        h("div",{class:"grid2",style:"margin-top:8px"},sel(PRIOS,"prio"),sel(WHO,"who",()=>{if(a.who==="Homeowner")a.include=false;else if(a.who==="Crew")a.include=true;})),
+        h("div",{class:"row"},h("button",{class:"btn small warn",onclick:()=>{job.actions=job.actions.filter(x=>x.id!==a.id);draw();save();}},"Remove"))));
     });
   }
-  drawActs();
-  m.append(list);
-  m.append(h("button",{class:"btn block",onclick:()=>{job.actions.push({id:uid(),auto:false,sec:"",text:"",effort:"Homeowner",cost:"",prio:"Medium"});drawActs();save();}},"Add action"));
+  draw();m.append(list);
+  m.append(h("button",{class:"btn block",style:"margin-bottom:12px",onclick:()=>{const na={id:uid(),auto:false,sec:"",text:"",prio:"Medium"};ensureAction(na);na.who="Crew";na.include=true;job.actions.push(na);draw();save();}},"Add action"));
+  m.append(h("button",{class:"btn solid block",onclick:()=>go({mode:"quote"})},"Next: price the work"));
 }
 
-/* ============ REPORTS ============ */
-function contactLine(){
-  const p=[]; if(settings.phone)p.push(esc(settings.phone)); if(settings.email)p.push(esc(settings.email)); if(settings.web)p.push(esc(settings.web));
-  return p.join(" &nbsp;|&nbsp; ");
+/* ================= SIGNATURE ================= */
+function sigPad(){
+  const wrap=h("div",{class:"sigwrap"});const cv=h("canvas");wrap.append(cv);
+  let drawing=false,dirty=false,last=null;
+  function init(){const r=wrap.getBoundingClientRect();cv.width=Math.max(320,Math.round((r.width||320)*2));cv.height=300;const c=cv.getContext("2d");c.fillStyle="#fff";c.fillRect(0,0,cv.width,cv.height);c.lineWidth=5;c.lineCap="round";c.lineJoin="round";c.strokeStyle="#111";dirty=false;}
+  function pt(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height};}
+  cv.addEventListener("pointerdown",e=>{drawing=true;last=pt(e);try{cv.setPointerCapture(e.pointerId);}catch(x){}e.preventDefault();});
+  cv.addEventListener("pointermove",e=>{if(!drawing)return;const p=pt(e),c=cv.getContext("2d");c.beginPath();c.moveTo(last.x,last.y);c.lineTo(p.x,p.y);c.stroke();last=p;dirty=true;e.preventDefault();});
+  const end=()=>{drawing=false;};cv.addEventListener("pointerup",end);cv.addEventListener("pointercancel",end);cv.addEventListener("pointerleave",end);
+  setTimeout(init,0);
+  return {el:wrap,clear:init,isEmpty:()=>!dirty,data:()=>cv.toDataURL("image/png")};
 }
-function sortedActions(j){ return [...(j.actions||[])].filter(a=>a.text).sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio)); }
-function photoCount(j){ let n=0; Object.values(j.answers).forEach(a=>{n+=(a.photos||[]).length;}); return n; }
 
-function clientReportHTML(j){
-  const res=computeResult(j), inf=j.info, acts=sortedActions(j);
-  const co=esc(settings.company||"Your company");
-  let o=`<div class="cover">${logoHTML()}<div><h1>Wildfire Readiness Plan</h1><div class="co">${co}${settings.tagline?" · "+esc(settings.tagline):""}</div></div></div>`;
-  o+=`<div class="meta"><div><strong>Prepared for:</strong> ${esc(inf.client)||"—"}</div><div><strong>Property:</strong> ${esc(inf.address)||"—"}</div><div><strong>Visit date:</strong> ${esc(inf.date)}</div><div><strong>Assessor:</strong> ${esc(inf.assessor)||"—"}</div></div>`;
+/* ================= QUOTE ================= */
+function renderQuote(m){
+  m.append(h("h2",{},"Quote"),h("p",{class:"sub"},"Choose the work, check each estimate, then build the quote."));
+  if(!settings.ratesConfirmed)m.append(h("div",{class:"warnbox"},h("strong",{},"Using placeholder rates. "),"Review pricing in Settings before you send a quote.",h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>go({view:"settings"})},"Open settings"))));
+  const q=job.quote;const locked=q&&q.status==="accepted";
+  const acts=job.actions.filter(a=>a.text);
+  if(!acts.length){m.append(h("div",{class:"card"},"No actions yet. Rate items Fair or Poor in the Assess tab, or add an action in Summary."));return;}
+  if(locked)m.append(h("div",{class:"okbox"},h("strong",{},"Quote accepted. "),"Estimates are locked. Use Revise quote below if the scope changes."));
+  const estBox=h("div");m.append(h("h2",{},"Work and estimates"),estBox);
+  function chipFor(a){return a.who==="Homeowner"?"Homeowner":(actionPrice(a)>0?money(r5(actionPrice(a))):"Needs quote");}
+  acts.forEach(a=>{
+    const chip=h("span",{class:"money"},chipFor(a));
+    const inc=h("input",{type:"checkbox",checked:!!a.include&&a.who!=="Homeowner",disabled:locked||a.who==="Homeowner",style:"width:28px;height:28px;accent-color:var(--brand);flex:0 0 auto",onchange:e=>{a.include=e.target.checked;save();}});
+    const est=h("div",{class:"est"});
+    const numField=(l,key,step)=>h("label",{class:"f"},h("span",{},l),h("input",{type:"number",step:step||"any",inputmode:"decimal",value:a[key]||"",disabled:locked,oninput:e=>{a[key]=num(e.target.value);chip.textContent=chipFor(a);save();}}));
+    est.append(h("div",{class:"grid2"},numField("Hours","hrs","0.25"),h("label",{class:"f"},h("span",{},"Crew"),h("select",{disabled:locked,onchange:e=>{a.crew=e.target.value;chip.textContent=chipFor(a);save();}},CREWS.map(([k,l])=>h("option",{value:k,selected:a.crew===k},l)))),numField("Materials cost $","mat"),numField("Subcontractor cost $","sub"),numField("Disposal $","disp")),
+      h("label",{class:"f"},h("span",{},"Materials or tools for the crew"),h("input",{type:"text",value:a.matNote||"",disabled:locked,oninput:e=>{a.matNote=e.target.value;save();}})),
+      h("p",{class:"hint"},"Estimates start as placeholders. Set hours after your first jobs. Subcontractor cost gets the markup in Settings."));
+    const tog=h("button",{class:"btn small",onclick:()=>{est.classList.toggle("open");tog.textContent=est.classList.contains("open")?"Hide estimate":"Edit estimate";}},"Edit estimate");
+    estBox.append(h("div",{class:"item"},h("div",{class:"taskrow"},inc,h("div",{style:"flex:1"},a.sec?h("div",{class:"hint",style:"margin:0"},a.sec+" · "+a.who):null,h("div",{style:"font-weight:700"},a.text)),chip),h("div",{class:"row"},tog),est));
+  });
+  const qbox=h("div");m.append(qbox);
+  function drawQuote(){
+    qbox.textContent="";
+    const q=job.quote;
+    if(!locked)qbox.append(h("button",{class:"btn solid block",style:"margin:6px 0 14px",onclick:()=>{ensureQuote(job);job.quote.lines=buildLines(job);job.quote.validDays=job.quote.validDays||settings.quoteDays;save();drawQuote();}},q?"Refresh quote from the estimates above":"Build quote from the work above"));
+    if(!q)return;
+    const editable=q.status!=="accepted";
+    qbox.append(h("h2",{},"Quote "+q.number));
+    const head=h("div",{class:"card"},h("div",{class:"row",style:"margin:0"},h("span",{class:"pill t"},q.status==="draft"?"Draft":q.status==="sent"?"Sent":q.status==="accepted"?"Accepted":"Declined")),
+      h("div",{class:"grid2",style:"margin-top:10px"},h("label",{class:"f"},h("span",{},"Quote date"),h("input",{type:"date",value:q.date,disabled:!editable,oninput:e=>{q.date=e.target.value;save();}})),h("label",{class:"f"},h("span",{},"Valid for (days)"),h("input",{type:"number",value:q.validDays,disabled:!editable,oninput:e=>{q.validDays=num(e.target.value);save();}}))));
+    qbox.append(head);
+    const linesBox=h("div",{class:"card"});const totBox=h("div",{class:"card"});
+    function drawTotals(){
+      totBox.textContent="";const t=quoteTotals(q);
+      const row=(l,v,cls)=>h("div",{class:cls||""},h("span",{},l),h("span",{class:"money"},v));
+      const tt=h("div",{class:"totals"},row("Subtotal",money(t.sub)),settings.hstOn?row("HST ("+settings.hstRate+"%)",money(t.hst)):null,row("Total",money(t.total),"big"),t.dep?row("Deposit due before work starts ("+settings.depositPct+"%)",money(t.dep)):h("div",{},h("span",{class:"hint"},"No deposit: job is at or under "+money(settings.depositOver))),t.dep?row("Balance due "+settings.balanceDays+" days after work",money(t.balance)):null);
+      totBox.append(tt);
+      if(t.tbd)totBox.append(h("p",{class:"hint"},"Some lines are marked to be quoted separately and are not in the total."));
+      if(!settings.hstOn)totBox.append(h("p",{class:"hint"},"HST is not charged because HST is switched off in Settings."));
+    }
+    function drawLines(){
+      linesBox.textContent="";
+      q.lines.forEach((l,i)=>{
+        linesBox.append(h("div",{class:"qline"},
+          (()=>{const ta=h("textarea",{disabled:!editable,oninput:e=>{l.desc=e.target.value;e.target.style.height="auto";e.target.style.height=e.target.scrollHeight+"px";save();}},l.desc);setTimeout(()=>{ta.style.height="auto";ta.style.height=ta.scrollHeight+"px";},0);return ta;})(),
+          h("input",{type:"number",step:"any",inputmode:"decimal",disabled:!editable,placeholder:"TBD",value:l.tbd?"":l.amount,oninput:e=>{const v=e.target.value;if(v===""){l.tbd=true;l.amount=0;}else{l.tbd=false;l.amount=num(v);}drawTotals();save();}}),
+          editable?h("button",{class:"btn small warn","aria-label":"Remove line",onclick:()=>{q.lines.splice(i,1);drawLines();drawTotals();save();}},"×"):h("span")));
+      });
+      if(!q.lines.length)linesBox.append(h("div",{class:"hint"},"No lines yet. Include work above and refresh, or add a custom line."));
+      if(editable)linesBox.append(h("button",{class:"btn small",onclick:()=>{q.lines.push({id:uid(),desc:"",amount:0,tbd:false});drawLines();save();}},"Add custom line"));
+    }
+    qbox.append(linesBox);drawLines();qbox.append(totBox);drawTotals();
+    qbox.append(h("div",{class:"card"},h("label",{class:"f"},h("span",{},"Notes shown on the quote"),h("textarea",{disabled:!editable,placeholder:"For example: access, timing, what is not included",oninput:e=>{q.notes=e.target.value;save();}},q.notes||""))));
+    // status controls
+    const ctl=h("div",{class:"card"});
+    if(q.status==="accepted"){
+      ctl.append(h("div",{class:"ttl"},"Accepted by "+(q.acceptedName||"client")),h("div",{class:"hint"},"On "+fmtDate(q.acceptedDate)),q.signature?h("img",{src:q.signature,alt:"Signature",style:"max-width:100%;max-height:120px;background:#fff;border-radius:8px"}):null,
+        h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>go({mode:"bill"})},"Go to billing"),h("button",{class:"btn small warn",onclick:()=>{q.status="draft";q.acceptedName="";q.acceptedDate="";q.signature="";save();render();}},"Revise quote")));
+    }else{
+      ctl.append(h("div",{class:"ttl"},"Send and accept"),h("div",{class:"row"},
+        h("button",{class:"btn small",onclick:()=>{saveFile("quote-"+slug(job.info.client)+"-"+q.number+".html",exportDoc(quoteHTML(job),"Quote "+q.number));if(q.status==="draft"){q.status="sent";q.sentDate=today();save();render();}}},"Save quote file"),
+        h("button",{class:"btn small",onclick:()=>go({mode:"docs",doc:"quote"})},"Preview")));
+      const acc=h("div",{style:"display:none;margin-top:12px"});
+      const nameIn=h("input",{type:"text",placeholder:"Name of person accepting",value:job.info.client||""});
+      const pad=sigPad();
+      acc.append(h("label",{class:"f"},h("span",{},"Name"),nameIn),h("div",{class:"hint"},"Client signs below to accept this quote and our terms."),pad.el,h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>pad.clear()},"Clear"),h("button",{class:"btn small solid",onclick:()=>{if(pad.isEmpty()){toast("Please sign first.");return;}if(!nameIn.value.trim()){toast("Enter the name.");return;}const t=quoteTotals(q);if(!q.lines.length||t.total<=0){toast("The quote has no priced lines.");return;}q.status="accepted";q.acceptedName=nameIn.value.trim();q.acceptedDate=today();q.signature=pad.data();save();render();toast("Quote accepted.");}},"Confirm acceptance")));
+      ctl.append(h("div",{class:"row"},h("button",{class:"btn small tide",onclick:()=>{acc.style.display=acc.style.display==="none"?"block":"none";}},"Client accepts"),h("button",{class:"btn small warn",onclick:()=>{q.status="declined";save();render();}},"Client declined")),acc);
+      if(q.status==="declined")ctl.append(h("div",{class:"hint"},"Marked as declined. Refresh the quote or accept to reopen."));
+    }
+    qbox.append(ctl);
+  }
+  drawQuote();
+}
+
+/* ================= WORK (CREW) ================= */
+function renderWork(m){
+  const acts=includedActions(job);
+  m.append(h("h2",{},"Work order"),h("p",{class:"sub"},"For the crew. No prices are shown here or on the crew copy."));
+  if(!acts.length){m.append(h("div",{class:"card"},"No work is included yet. Choose work in the Quote tab."));return;}
+  const q=job.quote;
+  if(!q||q.status!=="accepted")m.append(h("div",{class:"warnbox"},h("strong",{},"Quote not accepted yet. "),"You can plan the job now, but don't start work until the client has accepted."));
+  const W=job.work;
+  m.append(h("div",{class:"card"},h("div",{class:"ttl"},job.info.client||"Client"),
+    h("div",{class:"kv"},h("span",{},"Address"),h("span",{},job.info.address||"-")),h("div",{class:"kv"},h("span",{},"Phone"),h("span",{},job.info.phone||"-")),h("div",{class:"kv"},h("span",{},"Access"),h("span",{},job.info.access||"-")),
+    h("div",{class:"kv"},h("span",{},"Estimated hours"),h("span",{},estHours(job).toFixed(1)+" h")),
+    h("div",{class:"grid2",style:"margin-top:10px"},field("Planned work date","workDate","date"),h("label",{class:"f"},h("span",{},"Crew on site (names)"),h("input",{type:"text",value:W.crewNames||"",oninput:e=>{W.crewNames=e.target.value;save();}})))));
+  // hazards
+  const res=computeResult(job);
+  const haz=res.flags.filter(f=>f.kind==="Escalation"||f.kind==="Flagged for human review"||f.kind==="Measurement below target");
+  if(haz.length){const ul=h("ul");haz.forEach(f=>ul.append(h("li",{},h("strong",{},f.text),f.extra?" — "+f.extra:"",f.note?" ("+f.note+")":"")));m.append(h("div",{class:"attn"},h("h3",{},"Hazards and flags"),ul));}
+  // before you start
+  const pre=["Provincial burn map and any woods restriction checked today","Client or site contact confirmed, and access understood","Hazards above briefed to the whole crew","PPE on, tools checked, first aid and water on site","Nothing outside the listed tasks without calling the owner"];
+  W.pre=W.pre||{};
+  const preBox=h("div",{class:"card"},h("div",{class:"ttl"},"Before you start"));
+  pre.forEach((t,i)=>preBox.append(h("label",{class:"taskrow",style:"margin:8px 0"},h("input",{type:"checkbox",checked:!!W.pre[i],onchange:e=>{W.pre[i]=e.target.checked;save();}}),h("span",{},t))));
+  m.append(preBox);
+  // tasks
+  m.append(h("h2",{},"Tasks"));
+  acts.forEach(a=>{
+    const T=W.tasks[a.id]||(W.tasks[a.id]={done:false,note:"",after:[]});
+    const item=a.itemId?job.answers[a.itemId]:null;
+    const before=item&&item.photos?item.photos:[];
+    const thumbs=h("div",{class:"thumbs"});
+    function drawT(){thumbs.textContent="";before.forEach(p=>thumbs.append(h("div",{class:"thumb"},h("img",{src:p,alt:"Before"}))));T.after.forEach((p,i)=>thumbs.append(h("div",{class:"thumb",style:"outline:3px solid var(--good)"},h("img",{src:p,alt:"After"}),h("button",{"aria-label":"Remove",onclick:()=>{T.after.splice(i,1);drawT();save();}},"×"))));}
+    drawT();
+    const fi=h("input",{type:"file",accept:"image/*",multiple:true,style:"display:none",onchange:async e=>{for(const f of e.target.files){try{T.after.push(await readImage(f,1280,"image/jpeg",0.72));}catch(x){}}e.target.value="";drawT();save();}});
+    m.append(h("div",{class:"item"},h("div",{class:"taskrow"},h("input",{type:"checkbox",checked:T.done,onchange:e=>{T.done=e.target.checked;save();}}),h("div",{style:"flex:1"},h("div",{class:"hint",style:"margin:0"},(a.sec||"")+(a.who!=="Crew"?" · "+a.who:"")+" · about "+num(a.hrs)+" h · "+(CREWS.find(c=>c[0]===a.crew)||["",""])[1]),h("div",{style:"font-weight:700"},a.text),a.matNote?h("div",{class:"hint"},"Bring: "+a.matNote):null)),
+      h("textarea",{placeholder:"Crew notes",oninput:e=>{T.note=e.target.value;save();}},T.note||""),h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>fi.click()},"Add after photo"),fi),h("div",{class:"hint",style:"margin-top:8px"},"Grey border: before photos. Green border: after photos."),thumbs));
+  });
+  // timer
+  const timeCard=h("div",{class:"card"},h("div",{class:"ttl"},"Time on site"));
+  const clock=h("div",{class:"timer"});
+  const logBox=h("div");
+  function fmtMins(mn){return Math.floor(mn/60)+" h "+String(mn%60).padStart(2,"0")+" min";}
+  function drawTime(){
+    const run=W.timerStart?Math.round((Date.now()-W.timerStart)/60000):0;
+    clock.textContent=W.timerStart?fmtMins(run):"Not running";
+    logBox.textContent="";
+    W.hours.forEach((x,i)=>logBox.append(h("div",{class:"kv"},h("span",{},fmtDate(x.date)+" · crew of "+x.crew),h("span",{},fmtMins(x.mins)+" "),)));
+    const tot=workedMinutes(job);
+    logBox.append(h("div",{class:"kv"},h("span",{},"Total worked"),h("strong",{},fmtMins(tot))),h("div",{class:"kv"},h("span",{},"Estimated"),h("span",{},fmtMins(Math.round(estHours(job)*60)))));
+  }
+  const startBtn=h("button",{class:"btn solid",onclick:()=>{if(W.timerStart){const mins=Math.round((Date.now()-W.timerStart)/60000);W.hours.push({id:uid(),date:today(),mins:Math.max(1,mins),crew:W.crewSize||2});W.timerStart=0;startBtn.textContent="Start timer";}else{W.timerStart=Date.now();if(!W.started)W.started=today();startBtn.textContent="Stop timer";}save();drawTime();refreshChromeAny();}},W.timerStart?"Stop timer":"Start timer");
+  timeCard.append(clock,h("div",{class:"row"},startBtn,h("label",{class:"f",style:"margin:0;display:flex;gap:8px;align-items:center"},h("span",{},"Crew size"),h("input",{type:"number",min:"1",value:W.crewSize||2,style:"width:80px",oninput:e=>{W.crewSize=Math.max(1,Math.round(num(e.target.value)));save();}}))),logBox);
+  m.append(timeCard);drawTime();
+  timerInt=setInterval(()=>{if(W.timerStart&&document.body.contains(clock))drawTime();},20000);
+  // completion
+  const done=acts.filter(a=>(W.tasks[a.id]||{}).done).length;
+  const cc=h("div",{class:"card"},h("div",{class:"ttl"},"Finish"),h("div",{class:"hint"},done+" of "+acts.length+" tasks ticked."),
+    h("label",{class:"f"},h("span",{},"Completion notes"),h("textarea",{oninput:e=>{W.notes=e.target.value;save();}},W.notes||"")));
+  if(W.finished){
+    cc.append(h("div",{class:"okbox"},h("strong",{},"Work completed "+fmtDate(W.finished)+". "),W.signoff?"Signed by "+W.signoff.name+".":""),W.signoff&&W.signoff.signature?h("img",{src:W.signoff.signature,alt:"Signature",style:"max-width:100%;max-height:120px;background:#fff;border-radius:8px"}):null,
+      h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>go({mode:"bill"})},"Go to billing"),h("button",{class:"btn small",onclick:()=>go({mode:"docs",doc:"done"})},"Completion report"),h("button",{class:"btn small warn",onclick:()=>{W.finished="";W.signoff=null;save();render();}},"Reopen")));
+  }else{
+    const nameIn=h("input",{type:"text",placeholder:"Client name for sign-off",value:job.info.client||""});const pad=sigPad();
+    cc.append(h("label",{class:"f"},h("span",{},"Client sign-off (walk-through done)"),nameIn),pad.el,h("div",{class:"row"},h("button",{class:"btn small",onclick:()=>pad.clear()},"Clear"),h("button",{class:"btn small solid",onclick:()=>{
+      if(W.timerStart){toast("Stop the timer first.");return;}
+      if(done<acts.length&&!confirm("Some tasks are not ticked. Mark the work complete anyway?"))return;
+      W.finished=today();W.signoff={name:nameIn.value.trim()||job.info.client,date:today(),signature:pad.isEmpty()?"":pad.data()};if(!W.started)W.started=today();save();render();toast("Work marked complete. Create the final invoice in Bill.");}},"Mark work complete")));
+  }
+  m.append(cc);
+  m.append(h("div",{class:"row"},h("button",{class:"btn",onclick:()=>go({mode:"docs",doc:"crew"})},"Preview crew copy")));
+}
+function refreshChromeAny(){renderChrome();}
+
+/* ================= BILL ================= */
+function renderBill(m){
+  m.append(h("h2",{},"Invoices"));
+  const q=job.quote;
+  if(!q||!q.lines.length){m.append(h("div",{class:"card"},"Build and accept a quote first."),h("button",{class:"btn solid",onclick:()=>go({mode:"quote"})},"Go to quote"));return;}
+  const t=quoteTotals(q);
+  const billed=cents(job.invoices.reduce((s,i)=>s+i.amount,0));
+  const paid=cents(job.invoices.reduce((s,i)=>s+invPaid(i),0));
+  m.append(h("div",{class:"card"},h("div",{class:"kv"},h("span",{},"Quote "+q.number),h("span",{class:"pill t"},q.status)),h("div",{class:"kv"},h("span",{},"Quote total"),h("strong",{},money(t.total))),h("div",{class:"kv"},h("span",{},"Invoiced so far"),h("span",{},money(billed))),h("div",{class:"kv"},h("span",{},"Received"),h("span",{},money(paid))),h("div",{class:"kv"},h("span",{},"Still to invoice"),h("span",{},money(Math.max(0,cents(t.total-billed)))))));
+  if(q.status!=="accepted")m.append(h("div",{class:"warnbox"},"The quote hasn't been accepted. Invoices are best created after the client accepts."));
+  if(!settings.hstOn)m.append(h("p",{class:"notice"},"HST is off in Settings, so invoices show no HST."));
+  const hasDep=job.invoices.some(i=>i.type==="deposit"),hasFinal=job.invoices.some(i=>i.type==="final");
+  const row=h("div",{class:"row",style:"margin:0 0 12px"});
+  if(t.dep>0&&!hasDep)row.append(h("button",{class:"btn tide",onclick:()=>{const inv=makeInvoice(job,"deposit");if(!inv)toast("Nothing to invoice.");save();render();}},"Create deposit invoice ("+money(t.dep)+")"));
+  if(!hasFinal)row.append(h("button",{class:"btn solid",onclick:()=>{if(!job.work.finished&&!confirm("The work isn't marked complete. Create the final invoice anyway?"))return;const inv=makeInvoice(job,"final");if(!inv)toast("Nothing left to invoice.");save();render();}},"Create final invoice"));
+  m.append(row);
+  job.invoices.forEach(inv=>{
+    const st=invStatus(inv);
+    const payBox=h("div");
+    function drawPay(){
+      payBox.textContent="";
+      (inv.payments||[]).forEach((p,i)=>payBox.append(h("div",{class:"kv"},h("span",{},fmtDate(p.date)+" · "+p.method+(p.note?" · "+p.note:"")),h("span",{},money(p.amount)+" ",h("button",{class:"btn small warn","aria-label":"Remove payment",onclick:()=>{inv.payments.splice(i,1);save();render();}},"×")))));
+    }
+    drawPay();
+    const amt=h("input",{type:"number",step:"any",inputmode:"decimal",value:invBal(inv)>0?invBal(inv).toFixed(2):"",placeholder:"Amount"});
+    const dt=h("input",{type:"date",value:today()});const meth=h("select",{},PAY_METHODS.map(x=>h("option",{value:x},x)));
+    const pay=h("div",{style:"display:none;margin-top:10px"},h("div",{class:"grid3"},h("label",{class:"f"},h("span",{},"Amount"),amt),h("label",{class:"f"},h("span",{},"Date"),dt),h("label",{class:"f"},h("span",{},"Method"),meth)),h("button",{class:"btn small solid",onclick:()=>{const a=num(amt.value);if(a<=0){toast("Enter an amount.");return;}inv.payments.push({date:dt.value||today(),amount:cents(a),method:meth.value,note:""});save();render();}},"Save payment"));
+    const interest=interestAccrued(inv);
+    m.append(h("div",{class:"item"},
+      h("div",{class:"row",style:"margin:0;justify-content:space-between"},h("div",{class:"ttl"},inv.number+" · "+(inv.type==="deposit"?"Deposit":"Final")),h("span",{class:"pill "+(st==="Paid"?"g":st==="Overdue"?"p":"f")},st)),
+      h("div",{class:"hint"},inv.desc),
+      h("div",{class:"kv"},h("span",{},"Issued"),h("span",{},fmtDate(inv.issued))),h("div",{class:"kv"},h("span",{},"Due"),h("span",{},fmtDate(inv.due))),h("div",{class:"kv"},h("span",{},"Amount"),h("strong",{},money(inv.amount))),h("div",{class:"kv"},h("span",{},"Paid"),h("span",{},money(invPaid(inv)))),h("div",{class:"kv"},h("span",{},"Balance"),h("strong",{},money(invBal(inv)))),
+      interest>0?h("p",{class:"hint"},"Overdue. Interest that may be charged to date at "+settings.interestMonthly+"% per month: about "+money(interest)+"."):null,
+      payBox,pay,
+      h("div",{class:"row"},invBal(inv)>0?h("button",{class:"btn small tide",onclick:()=>{pay.style.display=pay.style.display==="none"?"block":"none";}},"Record payment"):null,
+        h("button",{class:"btn small",onclick:()=>{docInv=inv.id;go({mode:"docs",doc:"invoice"});}},"Preview"),
+        h("button",{class:"btn small",onclick:()=>saveFile("invoice-"+slug(job.info.client)+"-"+inv.number+".html",exportDoc(invoiceHTML(job,inv),"Invoice "+inv.number))},"Save invoice file"),
+        (inv.payments||[]).length?null:h("button",{class:"btn small warn",onclick:()=>{job.invoices=job.invoices.filter(x=>x.id!==inv.id);save();render();}},"Delete"))));
+  });
+  if(!job.invoices.length)m.append(h("p",{class:"notice"},"No invoices yet."));
+  m.append(h("button",{class:"btn block",onclick:()=>exportCSV([job])},"Export this job's invoices (CSV)"));
+}
+
+/* ================= DOCUMENTS ================= */
+function docHead(title,sub){
+  const contact=[settings.phone,settings.email,settings.web].filter(Boolean).map(esc).join(" &nbsp;|&nbsp; ");
+  return `<div class="cover">${logoHTML("light")}<div><h1>${esc(title)}</h1><div class="co">${esc(settings.company)}${settings.legal?" ("+esc(settings.legal)+")":""}${settings.tagline?" &middot; "+esc(settings.tagline):""}${sub?"<br>"+sub:""}</div><div class="small">${contact}</div></div></div>`;
+}
+function metaBlock(j,extra){
+  const inf=j.info;const r=(l,v)=>v?`<div><strong>${esc(l)}:</strong> ${esc(v)}</div>`:"";
+  return `<div class="meta">${r("Client",inf.client)}${r("Property",inf.address)}${r("Phone",inf.phone)}${r("Email",inf.email)}${extra||""}</div>`;
+}
+function sortedActions(j){return [...j.actions].filter(a=>a.text).sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio));}
+function photoCount(j){let n=0;Object.values(j.answers).forEach(a=>{n+=(a.photos||[]).length;});return n;}
+function measRows(j){
+  const rows=[];
+  SECTIONS.forEach(s=>(s.meas||[]).forEach(mm=>{const v=j.meas[mm.k];if(v===undefined||v==="")return;const st=measStatus(mm,v);rows.push({l:mm.l,v:v+" "+mm.u,t:st.t?"At least "+st.t+" "+mm.u:"",s:st.s==="ok"?"Meets target":st.s==="below"?"Below target":"Recorded"});}));
+  return rows;
+}
+function measTable(j){
+  const rows=measRows(j);if(!rows.length)return "";
+  return `<h2>Measurements</h2><table><tr><th>What we measured</th><th>Measured</th><th>Target</th><th>Result</th></tr>`+rows.map(r=>`<tr><td>${esc(r.l)}</td><td>${esc(r.v)}</td><td>${esc(r.t)}</td><td>${esc(r.s)}</td></tr>`).join("")+`</table>`;
+}
+function progressBlock(j){
+  if(!j.baseline)return "";
+  const res=computeResult(j);let better=0,same=0,worse=0;const rank={g:3,f:2,p:1};
+  allItems().forEach(({it})=>{const now=(j.answers[it.id]||{}).r,was=j.baseline.ratings[it.id];if(now&&was&&rank[now]&&rank[was]){if(rank[now]>rank[was])better++;else if(rank[now]<rank[was])worse++;else same++;}});
+  return `<h2>Progress since your last visit</h2><p>Compared with our visit on ${esc(fmtDate(j.baseline.date))} (attention level ${esc(j.baseline.level)}${j.baseline.score===null?"":", score "+j.baseline.score+"%"}). Now: attention level ${esc(res.level)}${res.pct===null?"":", score "+res.pct+"%"}.</p><ul><li><strong>${better}</strong> item${better===1?"":"s"} improved</li><li><strong>${same}</strong> stayed the same</li><li><strong>${worse}</strong> got worse</li></ul>`;
+}
+const INDEP="Atlantic Wildfire Mitigation & Co is an independent company. It is not part of, or endorsed by, any government agency or program.";
+function planHTML(j){
+  const res=computeResult(j),inf=j.info,acts=sortedActions(j);
+  let o=docHead("Wildfire Readiness Plan");
+  o+=metaBlock(j,`<div><strong>Visit date:</strong> ${esc(fmtDate(inf.date))}</div><div><strong>Assessor:</strong> ${esc(inf.assessor)||"-"}</div>`);
   o+=`<h2>Your results at a glance</h2><div class="glance"><div class="box"><h3>Attention level: ${res.level==="Not enough data"?"Incomplete":esc(res.level)}</h3><p>${esc(LEVEL_TEXT[res.level])}</p></div>`;
-  if(j.summary) o+=`<div class="box"><h3>A note from your assessor</h3><p>${nl(j.summary)}</p></div>`;
-  const top=acts.slice(0,3);
-  if(top.length) o+=`<div class="box"><h3>Start here: your first steps</h3><ol>${top.map(a=>`<li>${esc(a.text)}</li>`).join("")}</ol></div>`;
-  o+=`</div>`;
-  o+=`<p class="small">Attention level is a summary of what we saw on the day of the visit. It is a planning tool, not a guarantee, and it is not an insurance rating.</p>`;
-
+  if(j.summary)o+=`<div class="box"><h3>A note from your assessor</h3><p>${nl(j.summary)}</p></div>`;
+  const top=acts.slice(0,3);if(top.length)o+=`<div class="box"><h3>Start here: your first steps</h3><ol>${top.map(a=>`<li>${esc(a.text)}</li>`).join("")}</ol></div>`;
+  o+=`</div><p class="small">Attention level summarizes what we saw on the day of the visit. It is a planning tool, not a guarantee, and it is not an insurance rating.</p>`;
+  o+=progressBlock(j);
+  o+=measTable(j);
   o+=`<h2>How to read this plan</h2><p>Wildfire risk around a home is easier to manage when you think in zones, working outward from the house:</p><table><tr><th>Zone</th><th>What it means</th></tr>`+SECTIONS.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.client)}</td></tr>`).join("")+`</table>`;
-
   o+=`<h2 class="pb">What we found, zone by zone</h2>`;
   SECTIONS.forEach(s=>{
-    const rows=s.items.filter(it=>{const a=j.answers[it.id]||{};return a.r&&a.r!=="n";});
-    if(!rows.length) return;
+    const rows=s.items.filter(it=>{const a=j.answers[it.id]||{};return a.r&&a.r!=="n";});if(!rows.length)return;
     o+=`<h3>${esc(s.name)}</h3>`;
-    rows.forEach(it=>{
-      const a=j.answers[it.id];
+    rows.forEach(it=>{const a=j.answers[it.id];
       o+=`<div class="item-row"><span class="pill ${a.r}">${CLABEL[a.r]}</span> <strong>${esc(it.t)}</strong>`;
-      if(a.note) o+=`<p><em>What we saw:</em> ${nl(a.note)}</p>`;
-      if(a.r==="f"||a.r==="p"){ o+=`<p class="why"><em>Why it matters:</em> ${esc(it.why)}</p><p class="todo">What to do: ${esc(it.fix)}</p>`; }
-      if(a.photos&&a.photos.length) o+=`<div class="ph">${a.photos.map(p=>`<img src="${p}" alt="Photo: ${esc(it.t)}">`).join("")}</div>`;
-      o+=`</div>`;
-    });
+      if(a.note)o+=`<p><em>What we saw:</em> ${nl(a.note)}</p>`;
+      if(a.r==="f"||a.r==="p")o+=`<p class="why"><em>Why it matters:</em> ${esc(it.why)}</p><p class="todo">What to do: ${esc(it.fix)}</p>`;
+      if(a.photos&&a.photos.length)o+=`<div class="ph">${a.photos.map(p=>`<img src="${p}" alt="Photo: ${esc(it.t)}">`).join("")}</div>`;
+      o+=`</div>`;});
   });
-
-  o+=`<h2 class="pb">Your action plan</h2><p>Work through these in order. Tick each one off and note the date so you can show progress.</p>`;
-  if(acts.length) o+=`<table><tr><th>Done</th><th>Priority</th><th>Action</th><th>Who</th><th>Rough cost</th></tr>`+acts.map(a=>`<tr><td>&#9744;<br><span class="small">Date:</span></td><td>${esc(a.prio)}</td><td>${esc(a.text)}</td><td>${esc(a.effort)}</td><td>${esc(a.cost)||"Ask us"}</td></tr>`).join("")+`</table>`; else o+=`<p>No actions were needed from this visit. Keep up the seasonal checks below.</p>`;
-  o+=`<p class="small">Cost bands are rough guides only. We can give you a written quote for any item.</p>`;
-
+  o+=`<h2 class="pb">Your action plan</h2><p>Work through these in order. Tick each one off and note the date so you can show your progress.</p>`;
+  if(acts.length)o+=`<table><tr><th>Done</th><th>Priority</th><th>Action</th><th>Who</th><th>Rough cost</th></tr>`+acts.map(a=>`<tr><td>&#9744;<br><span class="small">Date:</span></td><td>${esc(a.prio)}</td><td>${esc(a.text)}</td><td>${esc(a.who==="Crew"?"Our crew or you":a.who==="Arborist"?"Arborist":a.who==="Homeowner"?"You":"Specialist")}</td><td>${esc(costBand(a))}</td></tr>`).join("")+`</table>`;
+  else o+=`<p>No actions were needed from this visit. Keep up the seasonal checks below.</p>`;
+  o+=`<p class="small">Cost bands are rough guides. If you would like us to carry out the work in this plan, we send a written quote separately. Our mitigation work follows a written plan like this one.</p>`;
   o+=`<h2 class="pb">Keep it up: a year-round calendar</h2><p>Wildfire risk season in Nova Scotia runs from March 15 to October 15. Conditions around your home change every year, so these checks are worth repeating.</p><div class="cal">
-  <div class="box"><h3>Spring (before season starts)</h3><ul class="chk"><li>Rake and remove winter debris from Zone 1</li><li>Clean gutters and roof valleys</li><li>Clear under the deck and porch</li><li>Check vent screens and openings</li><li>Move firewood and stored items away from walls</li><li>Test your hose and reach all sides of the house</li></ul></div>
-  <div class="box"><h3>Summer</h3><ul class="chk"><li>Check the provincial burn map every day before any fire</li><li>Keep grass and weeds short</li><li>Keep the Zone 1 strip clear</li><li>Remove branches and debris after storms</li><li>Keep your go-bag and plan ready</li></ul></div>
+  <div class="box"><h3>Spring (before season starts)</h3><ul class="chk"><li>Rake and remove winter debris from the first 1.5 m</li><li>Clean gutters and roof valleys</li><li>Clear under the deck and porch</li><li>Check vent screens and openings</li><li>Move firewood and stored items away from walls</li><li>Test your hose and reach all sides of the house</li></ul></div>
+  <div class="box"><h3>Summer</h3><ul class="chk"><li>Check the provincial burn map every day before any fire</li><li>Keep grass and weeds short</li><li>Keep the strip against the walls clear</li><li>Remove branches and debris after storms</li><li>Keep your go-bag and plan ready</li></ul></div>
   <div class="box"><h3>Fall</h3><ul class="chk"><li>Clean needles and leaves from roof, gutters and deck</li><li>Trim branches back from the roof</li><li>Clear leaf build-up along walls</li><li>Review your action plan and mark what is done</li></ul></div>
-  <div class="box"><h3>Every year</h3><ul class="chk"><li>Book a follow-up visit to check progress</li><li>Update your evacuation plan</li><li>Review your home insurance with your insurer</li></ul></div></div>`;
-
-  o+=`<h2 class="pb">Be ready to leave</h2><div class="cal"><div class="box"><h3>Your household plan</h3><ul class="chk"><li>Two ways out of your property, and a meeting place</li><li>A plan for pets and anyone who needs help</li><li>A go-bag: medications, documents, chargers, water, a change of clothes</li><li>Phone numbers written down, not only on your phone</li><li>Check with your municipality about local emergency alerts</li></ul></div>
-  <div class="box"><h3>Know the rules</h3><ul><li>During wildfire risk season, no brush burning or campfires between 8 a.m. and 2 p.m.</li><li>Burn restrictions update daily at 2 p.m. Check the Nova Scotia burn map at novascotia.ca/burnsafe</li><li>Breaking burn restrictions can carry a $25,000 fine</li><li>Report a wildfire or a violation: 1-800-565-2224 or 911</li></ul></div></div>
-  <p class="small">Rules can change. Always check the current provincial and municipal information.</p>`;
-
-  o+=`<h2 class="pb">Your property record: keep this page</h2><p>This page is a snapshot of your property as it was on ${esc(inf.date)}. Keep it with your home records. Some insurers look closely at property-level details such as vegetation near the house, roofing and materials, and maintenance. Ask your insurer what documentation it accepts. We cannot promise any change to your coverage or premium.</p>`;
-  o+=`<table><tr><th>Property</th><td>${esc(inf.address)||"—"}</td></tr><tr><th>Assessment date</th><td>${esc(inf.date)}</td></tr><tr><th>Assessor</th><td>${esc(inf.assessor)||"—"}</td></tr>${CTX_FIELDS.map(([k,l])=>inf[k]?`<tr><th>${esc(l)}</th><td>${esc(inf[k])}</td></tr>`:"").join("")}<tr><th>Attention level</th><td>${res.level==="Not enough data"?"Incomplete":esc(res.level)}</td></tr><tr><th>Photos in this report</th><td>${photoCount(j)}</td></tr><tr><th>Actions recommended</th><td>${acts.length}</td></tr></table>`;
+  <div class="box"><h3>Every year</h3><ul class="chk"><li>Book a follow-up visit to check progress</li><li>Update your emergency plan</li><li>Review your home insurance with your insurer</li></ul></div></div>`;
+  o+=`<h2 class="pb">Emergency preparedness</h2><div class="cal"><div class="box"><h3>Your household plan</h3><ul class="chk"><li>Two ways out of your property, and a meeting place</li><li>A plan for pets and anyone who needs help</li><li>A go-bag: medications, documents, chargers, water, a change of clothes</li><li>Phone numbers written down, not only on your phone</li><li>Check with your municipality about local emergency alerts</li></ul></div>
+  <div class="box"><h3>Know the rules</h3><ul><li>During wildfire risk season, no brush burning or campfires between 8 a.m. and 2 p.m.</li><li>Burn restrictions update daily at 2 p.m. Check the Nova Scotia burn map at novascotia.ca/burnsafe</li><li>Breaking burn restrictions can carry a $25,000 fine</li><li>Report a wildfire: 1-800-565-2224 or 911</li></ul></div></div><p class="small">Rules can change. Always check the current provincial and municipal information.</p>`;
+  o+=`<h2 class="pb">Your property record: keep this page</h2><p>This page is a snapshot of your property as it was on ${esc(fmtDate(inf.date))}. Keep it with your home records. Some insurers look closely at property-level details such as vegetation near the house, roofing and materials, and maintenance. Ask your insurer what documentation it accepts. We cannot promise any change to your coverage or premium.</p>`;
+  o+=`<table><tr><th>Property</th><td>${esc(inf.address)||"-"}</td></tr><tr><th>Assessment date</th><td>${esc(fmtDate(inf.date))}</td></tr><tr><th>Assessor</th><td>${esc(inf.assessor)||"-"}</td></tr>${CTX_FIELDS.map(([k,l])=>inf[k]?`<tr><th>${esc(l)}</th><td>${esc(inf[k])}</td></tr>`:"").join("")}<tr><th>Attention level</th><td>${res.level==="Not enough data"?"Incomplete":esc(res.level)}</td></tr><tr><th>Photos in this plan</th><td>${photoCount(j)}</td></tr><tr><th>Actions recommended</th><td>${acts.length}</td></tr>${inf.nextVisit?`<tr><th>Next visit due</th><td>${esc(fmtDate(inf.nextVisit))}</td></tr>`:""}</table>`;
   o+=`<h3>Yearly self-check</h3><p class="small">Copy or reprint this page each spring and fall.</p><table><tr><th>Priority check</th><th>Spring</th><th>Fall</th></tr>`+allItems().filter(x=>x.it.w===3).map(x=>`<tr><td>${esc(x.it.t)}</td><td>&#9744;</td><td>&#9744;</td></tr>`).join("")+`</table>`;
-
-  o+=`<h2>Questions or next steps</h2><p>We can help with follow-up visits, written quotes, and doing the work. ${contactLine()}</p>`;
-  o+=`<div class="foot small"><p><strong>Limitations.</strong> This report records observable wildfire risk factors on the date of the visit. It is not a guarantee that a property will survive a wildfire, and it does not promise any change to insurance coverage or premiums. Recommendations are based on general FireSmart concepts and may change. ${co} is not affiliated with FireSmart Canada unless stated in writing. Draft wording: have a lawyer review before use.</p><p>FireSmart, Intelli-feu and other associated Marks are trademarks of Canadian Interagency Forest Fire Centre Inc. (confirm current owner wording with FireSmart).</p></div>`;
+  o+=`<h2>Questions or next steps</h2><p>We can help with a written quote for the work in this plan, follow-up visits, and yearly upkeep. ${[settings.phone,settings.email,settings.web].filter(Boolean).map(esc).join(" &nbsp;|&nbsp; ")}</p>`;
+  o+=`<div class="foot small"><p><strong>Limitations.</strong> This plan records observable wildfire risk factors on the date of the visit. It is not a guarantee that a property will survive a wildfire, and it does not promise any change to insurance coverage or premiums. Recommendations are general and may change. ${esc(INDEP)}</p></div>`;
   return o;
 }
-
-function internalReportHTML(j){
-  const res=computeResult(j), inf=j.info;
-  const row=(l,v)=>v?`<div><strong>${esc(l)}:</strong> ${esc(v)}</div>`:"";
-  let o=`<div class="cover">${logoHTML()}<div><h1>Internal Assessment Record</h1><div class="co">${esc(settings.company)} · not for client</div></div></div>`;
-  o+=`<div class="meta">${row("Client",inf.client)}${row("Address",inf.address)}${row("Phone",inf.phone)}${row("Email",inf.email)}${row("PID",inf.pid)}${row("Date",inf.date)}${row("Assessor",inf.assessor)}${row("Weather",inf.weather)}${row("Present",inf.ownerAuth)}${row("Burn map",inf.burn)}${CTX_FIELDS.map(([k,l])=>row(l,inf[k])).join("")}</div>`;
-  if(inf.notes) o+=`<p>${nl(inf.notes)}</p>`;
-  if(res.flags.length) o+=`<div class="attn"><h3>Items needing owner or professional attention</h3><ul>`+res.flags.map(f=>`<li><strong>${esc(f.kind)}:</strong> ${esc(f.text)}${f.extra?" — "+esc(f.extra):""}${f.note?" (Note: "+esc(f.note)+")":""}</li>`).join("")+`</ul></div>`;
+function internalHTML(j){
+  const res=computeResult(j),inf=j.info;
+  let o=docHead("Internal Assessment Record",'<span class="stamp">Not for client</span>');
+  o+=metaBlock(j,`<div><strong>Date:</strong> ${esc(fmtDate(inf.date))}</div><div><strong>Assessor:</strong> ${esc(inf.assessor)||"-"}</div><div><strong>Present:</strong> ${esc(inf.ownerAuth)}</div><div><strong>Burn map:</strong> ${esc(inf.burn)}</div><div><strong>Weather:</strong> ${esc(inf.weather)||"-"}</div><div><strong>Access:</strong> ${esc(inf.access)||"-"}</div>${CTX_FIELDS.map(([k,l])=>inf[k]?`<div><strong>${esc(l)}:</strong> ${esc(inf[k])}</div>`:"").join("")}`);
+  if(inf.notes)o+=`<p>${nl(inf.notes)}</p>`;
+  if(res.flags.length)o+=`<div class="attn"><h3>Items needing owner or professional attention</h3><ul>`+res.flags.map(f=>`<li><strong>${esc(f.kind)}:</strong> ${esc(f.text)}${f.extra?" — "+esc(f.extra):""}${f.note?" (Note: "+esc(f.note)+")":""}</li>`).join("")+`</ul></div>`;
   o+=`<h2>Summary</h2><p><span class="pill ${levelClass(res.level)}">${res.level==="Not enough data"?"Incomplete":"Attention level: "+esc(res.level)}</span> ${res.pct===null?"":"Condition score "+res.pct+"%. "}${res.rated} of ${res.required} items rated${res.unanswered?" ("+res.unanswered+" blank)":""}.</p>`;
-  if(j.summary) o+=`<p>${nl(j.summary)}</p>`;
+  if(j.summary)o+=`<p>${nl(j.summary)}</p>`;
+  o+=measTable(j)+progressBlock(j);
+  o+=`<h2>Business status</h2><table><tr><th>Stage</th><td>${esc(STAGES[stageOf(j)])}</td></tr>`;
+  if(j.quote){const t=quoteTotals(j.quote);o+=`<tr><th>Quote</th><td>${esc(j.quote.number)} · ${esc(j.quote.status)} · ${money(t.total)}</td></tr>`;}
+  o+=j.invoices.map(i=>`<tr><th>${esc(i.number)}</th><td>${esc(i.type)} · ${money(i.amount)} · paid ${money(invPaid(i))} · ${esc(invStatus(i))}</td></tr>`).join("");
+  if(j.quote)o+=`<tr><th>Hours</th><td>Estimated ${estHours(j).toFixed(1)} h, worked ${(workedMinutes(j)/60).toFixed(1)} h (person-hours not counted)</td></tr>`;
+  o+=`</table>`;
+  o+=`<h2>Action plan with estimates</h2>`;
   const acts=sortedActions(j);
-  o+=`<h2>Action plan</h2>`;
-  if(acts.length) o+=`<table><tr><th>Priority</th><th>Action</th><th>Who</th><th>Cost band</th></tr>`+acts.map(a=>`<tr><td>${esc(a.prio)}</td><td>${esc(a.text)}</td><td>${esc(a.effort)}</td><td>${esc(a.cost)}</td></tr>`).join("")+`</table>`; else o+=`<p>No actions recorded.</p>`;
+  if(acts.length)o+=`<table><tr><th>Priority</th><th>Action</th><th>Who</th><th>Hours</th><th>Crew</th><th>Price</th><th>In quote</th></tr>`+acts.map(a=>`<tr><td>${esc(a.prio)}</td><td>${esc(a.text)}</td><td>${esc(a.who)}</td><td>${num(a.hrs)}</td><td>${esc((CREWS.find(c=>c[0]===a.crew)||["",""])[1])}</td><td>${a.who==="Homeowner"?"-":actionPrice(a)>0?money(r5(actionPrice(a))):"TBD"}</td><td>${a.include?"Yes":"No"}</td></tr>`).join("")+`</table>`;
+  else o+=`<p>No actions.</p>`;
   o+=`<h2>All findings</h2>`;
-  SECTIONS.forEach(s=>{
-    o+=`<h3>${esc(s.name)}</h3>`;
-    s.items.forEach(it=>{
-      const a=j.answers[it.id]||{};
-      o+=`<div class="item-row"><span class="pill ${a.r||"n"}">${a.r?RLABEL[a.r]:"Not rated"}</span> <strong>${esc(it.t)}</strong>${a.flag?" <strong>(flagged for review)</strong>":""}${a.note?`<div>${nl(a.note)}</div>`:""}${(a.photos&&a.photos.length)?`<div class="ph">${a.photos.map(p=>`<img src="${p}" alt="">`).join("")}</div>`:""}</div>`;
-    });
-  });
+  SECTIONS.forEach(s=>{o+=`<h3>${esc(s.name)}</h3>`;s.items.forEach(it=>{const a=j.answers[it.id]||{};o+=`<div class="item-row"><span class="pill ${a.r||"n"}">${a.r?RLABEL[a.r]:"Not rated"}</span> <strong>${esc(it.t)}</strong>${a.flag?" <strong>(flagged for review)</strong>":""}${a.note?`<div>${nl(a.note)}</div>`:""}${(a.photos&&a.photos.length)?`<div class="ph">${a.photos.map(p=>`<img src="${p}" alt="">`).join("")}</div>`:""}</div>`;});});
   return o;
 }
-
-function reportText(j){
-  const res=computeResult(j), inf=j.info; const L=[];
-  L.push("PROPERTY WILDFIRE ASSESSMENT",settings.company,"");
-  L.push("Client: "+inf.client,"Address: "+inf.address,"Date: "+inf.date,"Assessor: "+inf.assessor,"Present: "+inf.ownerAuth,"Burn map: "+inf.burn);
-  CTX_FIELDS.forEach(([k,l])=>{ if(inf[k]) L.push(l+": "+inf[k]); });
-  if(res.flags.length){ L.push("","NEEDS HUMAN ATTENTION"); res.flags.forEach(f=>L.push("- "+f.kind+": "+f.text+(f.extra?" — "+f.extra:"")+(f.note?" ("+f.note+")":""))); }
-  L.push("","Attention level: "+res.level+(res.pct!==null?" (score "+res.pct+"%)":""));
-  if(j.summary) L.push(j.summary);
-  L.push("","ACTION PLAN");
-  sortedActions(j).forEach(a=>L.push("- ["+a.prio+"] "+a.text+" ("+a.effort+(a.cost?", "+a.cost:"")+")"));
-  L.push("","FINDINGS");
-  SECTIONS.forEach(s=>{ L.push("",s.name); s.items.forEach(it=>{ const a=j.answers[it.id]||{}; L.push("- "+it.t+": "+(a.r?RLABEL[a.r]:"Not rated")+(a.flag?" [FLAGGED]":"")+(a.note?" — "+a.note:"")+((a.photos&&a.photos.length)?" ("+a.photos.length+" photo(s))":"")); }); });
-  L.push("","Limitations: observable conditions on the visit date only; no guarantee against wildfire loss or insurance outcome.");
+function quoteHTML(j){
+  const q=j.quote;if(!q)return "<p>No quote yet.</p>";
+  const t=quoteTotals(q);const valid=addDays(q.date,q.validDays||settings.quoteDays);
+  let o=docHead("Quote");
+  o+=metaBlock(j,`<div><strong>Quote number:</strong> ${esc(q.number)}</div><div><strong>Date:</strong> ${esc(fmtDate(q.date))}</div><div><strong>Valid until:</strong> ${esc(fmtDate(valid))}</div><div><strong>Prepared by:</strong> ${esc(j.info.assessor)||esc(settings.company)}</div>`);
+  o+=`<h2>Work to be carried out</h2><p>This quote covers the work described below, following the written Readiness Plan for this property.</p><table><tr><th>#</th><th>Description</th><th class="r">Amount</th></tr>`;
+  q.lines.forEach((l,i)=>{o+=`<tr><td>${i+1}</td><td>${nl(l.desc)}</td><td class="r">${l.tbd?"To be quoted separately":money(l.amount)}</td></tr>`;});
+  o+=`</table><div class="tot"><div><span>Subtotal</span><span>${money(t.sub)}</span></div>${settings.hstOn?`<div><span>HST (${settings.hstRate}%)</span><span>${money(t.hst)}</span></div>`:""}<div class="big"><span>Total</span><span>${money(t.total)}</span></div>${t.dep?`<div><span>Deposit due before work starts (${settings.depositPct}%)</span><span>${money(t.dep)}</span></div><div><span>Balance due ${settings.balanceDays} days after work is completed</span><span>${money(t.balance)}</span></div>`:`<div><span>Payment due ${settings.balanceDays} days after work is completed</span><span>${money(t.total)}</span></div>`}</div>`;
+  if(t.tbd)o+=`<p class="small">Lines marked "to be quoted separately" are not included in the total. We will quote them once we have the details, for example from a specialist.</p>`;
+  if(q.notes)o+=`<h3>Notes</h3><p>${nl(q.notes)}</p>`;
+  o+=`<h2>Payment and terms</h2><ul>${t.dep?`<li>A ${settings.depositPct}% deposit is due before work starts.</li>`:""}<li>The ${t.dep?"balance":"total"} is due within ${settings.balanceDays} calendar days after the work is completed.</li><li>Overdue amounts may be charged interest of ${settings.interestMonthly}% per month (${cents(settings.interestMonthly*12)}% per year).</li><li>There is no charge to cancel or reschedule before we begin. If work has started, you pay for the work completed.</li><li>This quote is valid until ${esc(fmtDate(valid))}. Weather, provincial burn restrictions or unsafe conditions may mean we reschedule at no charge.</li><li>Our assessments and work do not guarantee that a property will survive a wildfire, and they do not promise any change to insurance coverage or premiums.</li></ul><p class="small">By accepting this quote you agree to our Terms and Conditions${settings.web?" at "+esc(settings.web)+"/terms.html":""}.</p>`;
+  if(settings.hstOn&&settings.hstNo)o+=`<p class="small">HST registration number: ${esc(settings.hstNo)}</p>`;
+  o+=`<h2>Acceptance</h2>`;
+  if(q.status==="accepted")o+=`<p><span class="stamp">Accepted</span></p><p>Accepted by <strong>${esc(q.acceptedName)}</strong> on ${esc(fmtDate(q.acceptedDate))}.</p><div class="sig">${q.signature?`<img src="${q.signature}" alt="Signature">`:""}</div>`;
+  else o+=`<p>To accept, sign below and return this quote, or confirm in writing.</p><p>Name: <span class="line" style="display:inline-block;width:60%"></span></p><p>Signature: <span class="line" style="display:inline-block;width:60%"></span></p><p>Date: <span class="line" style="display:inline-block;width:40%"></span></p>`;
+  o+=`<div class="foot small"><p>${esc(INDEP)}</p></div>`;
+  return o;
+}
+function invoiceHTML(j,inv){
+  if(!inv)return "<p>Choose an invoice.</p>";
+  const st=invStatus(inv);const q=j.quote;
+  let o=docHead("Invoice");
+  o+=metaBlock(j,`<div><strong>Invoice number:</strong> ${esc(inv.number)}</div><div><strong>Issued:</strong> ${esc(fmtDate(inv.issued))}</div><div><strong>Due:</strong> ${esc(fmtDate(inv.due))}</div>${q?`<div><strong>Quote:</strong> ${esc(q.number)}</div>`:""}${settings.hstOn&&settings.hstNo?`<div><strong>HST number:</strong> ${esc(settings.hstNo)}</div>`:""}`);
+  o+=`<h2>${inv.type==="deposit"?"Deposit":"Work completed"}</h2><table><tr><th>Description</th><th class="r">Amount</th></tr><tr><td>${esc(inv.desc)}</td><td class="r">${money(inv.sub)}</td></tr></table>`;
+  if(inv.type==="final"&&q){o+=`<h3>Work included</h3><ul>`+q.lines.filter(l=>!l.fixed&&!l.tbd).map(l=>`<li>${esc(l.desc)}</li>`).join("")+`</ul>`;}
+  o+=`<div class="tot"><div><span>Subtotal</span><span>${money(inv.sub)}</span></div>${settings.hstOn?`<div><span>HST (${settings.hstRate}%)</span><span>${money(inv.hst)}</span></div>`:""}<div class="big"><span>Invoice total</span><span>${money(inv.amount)}</span></div><div><span>Payments received</span><span>${money(invPaid(inv))}</span></div><div class="big"><span>Balance due</span><span>${money(invBal(inv))}</span></div></div>`;
+  if((inv.payments||[]).length)o+=`<h3>Payments</h3><table><tr><th>Date</th><th>Method</th><th class="r">Amount</th></tr>`+inv.payments.map(p=>`<tr><td>${esc(fmtDate(p.date))}</td><td>${esc(p.method)}</td><td class="r">${money(p.amount)}</td></tr>`).join("")+`</table>`;
+  o+=`<p>${st==="Paid"?'<span class="stamp">Paid</span>':`Payment is due by <strong>${esc(fmtDate(inv.due))}</strong>.`}</p>`;
+  if(settings.payText)o+=`<h3>How to pay</h3><p>${nl(settings.payText)}</p>`;
+  o+=`<p class="small">Overdue amounts may be charged interest of ${settings.interestMonthly}% per month (${cents(settings.interestMonthly*12)}% per year). ${settings.hstOn?"":"HST is not charged on this invoice."}</p>`;
+  o+=`<div class="foot small"><p>Thank you for choosing ${esc(settings.company)}. Questions about this invoice: ${[settings.phone,settings.email].filter(Boolean).map(esc).join(" | ")}.</p></div>`;
+  return o;
+}
+function crewHTML(j){
+  const acts=includedActions(j);const res=computeResult(j);const inf=j.info;
+  let o=docHead("Work Order: Crew Copy",'<span class="stamp">No prices</span>');
+  o+=`<div class="meta"><div><strong>Client:</strong> ${esc(inf.client)||"-"}</div><div><strong>Site contact phone:</strong> ${esc(inf.phone)||"-"}</div><div><strong>Address:</strong> ${esc(inf.address)||"-"}</div><div><strong>Access:</strong> ${esc(inf.access)||"-"}</div><div><strong>Planned date:</strong> ${esc(fmtDate(inf.workDate))||"-"}</div><div><strong>Crew:</strong> ${esc(j.work.crewNames)||"-"}</div><div><strong>Estimated hours:</strong> ${estHours(j).toFixed(1)}</div></div>`;
+  const haz=res.flags.filter(f=>f.kind==="Escalation"||f.kind==="Flagged for human review"||f.kind==="Measurement below target");
+  if(haz.length)o+=`<div class="attn"><h3>Hazards and flags</h3><ul>`+haz.map(f=>`<li><strong>${esc(f.text)}</strong>${f.extra?" — "+esc(f.extra):""}${f.note?" ("+esc(f.note)+")":""}</li>`).join("")+`</ul></div>`;
+  o+=`<h2>Before you start</h2><ul class="chk"><li>Provincial burn map and any woods restriction checked today</li><li>Client or site contact confirmed, and access understood</li><li>Hazards above briefed to the whole crew</li><li>PPE on, tools checked, first aid and water on site</li><li>Nothing outside the listed tasks without calling the owner</li></ul>`;
+  o+=`<h2>Tasks</h2><table><tr><th>Done</th><th>Zone and task</th><th>Est. h</th><th>Bring and notes</th></tr>`;
+  acts.forEach(a=>{o+=`<tr><td>&#9744;</td><td><span class="small">${esc(a.sec||"")}${a.who!=="Crew"?" · "+esc(a.who):""}</span><br><strong>${esc(a.text)}</strong></td><td>${num(a.hrs)}</td><td>${esc(a.matNote)||""}</td></tr>`;});
+  o+=`</table>`;
+  const withPhotos=acts.filter(a=>a.itemId&&(j.answers[a.itemId]||{}).photos&&j.answers[a.itemId].photos.length);
+  if(withPhotos.length){o+=`<h2>Before photos</h2>`;withPhotos.forEach(a=>{o+=`<div class="item-row"><strong>${esc(itemOf(a.itemId).t)}</strong><div class="ph">${j.answers[a.itemId].photos.map(p=>`<img src="${p}" alt="">`).join("")}</div></div>`;});}
+  o+=`<h2>Rules for this job</h2><ul><li>Tree felling and work aloft are for a qualified arborist only, unless the owner assigns them to you in writing.</li><li>Stop work and call the owner if you find a hazard that isn't on this sheet.</li><li>Take after photos of every task from the same angle as the before photos.</li><li>Leave the site clean: debris removed or chipped, tools counted.</li></ul>`;
+  o+=`<h2>Sign-off</h2><p>Time in: <span class="line" style="display:inline-block;width:25%"></span> Time out: <span class="line" style="display:inline-block;width:25%"></span></p><p>Crew lead: <span class="line" style="display:inline-block;width:45%"></span> Date: <span class="line" style="display:inline-block;width:25%"></span></p><p>Client walk-through and signature: <span class="line" style="display:inline-block;width:45%"></span></p><p>Notes:</p><div class="line"></div><div class="line"></div>`;
+  return o;
+}
+function completionHTML(j){
+  const acts=includedActions(j);const W=j.work;
+  let o=docHead("Work Completed");
+  o+=metaBlock(j,`<div><strong>Completed:</strong> ${esc(fmtDate(W.finished))||"In progress"}</div>${W.started?`<div><strong>Started:</strong> ${esc(fmtDate(W.started))}</div>`:""}`);
+  o+=`<h2>What we did</h2>`;
+  acts.forEach(a=>{
+    const T=W.tasks[a.id]||{};const before=a.itemId&&(j.answers[a.itemId]||{}).photos||[];
+    o+=`<div class="item-row"><span class="pill ${T.done?"g":"n"}">${T.done?"Done":"Not completed"}</span> <strong>${esc(a.text)}</strong>${T.note?`<p>${nl(T.note)}</p>`:""}`;
+    if(before.length||(T.after||[]).length)o+=`<table><tr><th>Before</th><th>After</th></tr><tr><td>${before.map(p=>`<img src="${p}" alt="Before" style="width:100%;max-width:230px;margin:2px">`).join("")}</td><td>${(T.after||[]).map(p=>`<img src="${p}" alt="After" style="width:100%;max-width:230px;margin:2px">`).join("")}</td></tr></table>`;
+    o+=`</div>`;
+  });
+  if(W.notes)o+=`<h2>Notes</h2><p>${nl(W.notes)}</p>`;
+  if(W.signoff)o+=`<h2>Sign-off</h2><p>Walk-through with <strong>${esc(W.signoff.name)}</strong> on ${esc(fmtDate(W.signoff.date))}.</p><div class="sig">${W.signoff.signature?`<img src="${W.signoff.signature}" alt="Signature">`:""}</div>`;
+  o+=`<h2>Keeping it up</h2><p>Work like this needs a yearly check to stay effective. ${j.info.nextVisit?`Your next visit is due around <strong>${esc(fmtDate(j.info.nextVisit))}</strong>.`:"Ask us about an annual maintenance visit."} Keep this report with your property records.</p><div class="foot small"><p>This report records the work carried out on the date shown. It is not a guarantee that a property will survive a wildfire, and it does not promise any change to insurance coverage or premiums. ${esc(INDEP)}</p></div>`;
+  return o;
+}
+function planText(j){
+  const res=computeResult(j),inf=j.info,L=[];
+  L.push("WILDFIRE READINESS PLAN",settings.company,"","Client: "+inf.client,"Address: "+inf.address,"Date: "+inf.date,"Assessor: "+inf.assessor);
+  L.push("","Attention level: "+res.level+(res.pct!==null?" (score "+res.pct+"%)":""));if(j.summary)L.push(j.summary);
+  const mr=measRows(j);if(mr.length){L.push("","MEASUREMENTS");mr.forEach(r=>L.push("- "+r.l+": "+r.v+(r.t?" ("+r.t+")":"")+" "+r.s));}
+  L.push("","ACTION PLAN");sortedActions(j).forEach(a=>L.push("- ["+a.prio+"] "+a.text+" ("+costBand(a)+")"));
+  L.push("","FINDINGS");SECTIONS.forEach(s=>{L.push("",s.name);s.items.forEach(it=>{const a=j.answers[it.id]||{};L.push("- "+it.t+": "+(a.r?RLABEL[a.r]:"Not rated")+(a.note?" — "+a.note:""));});});
+  L.push("","Limitations: observable conditions on the visit date only; no guarantee against wildfire loss or insurance outcome.",INDEP);
   return L.join("\n");
 }
-function renderReport(m){
-  syncActions();
-  const modes=h("div",{class:"modes noprint"});
-  [["client","Client report"],["internal","Internal record"]].forEach(([k,l])=>modes.append(h("button",{class:reportMode===k?"on":"",onclick:()=>{reportMode=k;render();}},l)));
-  m.append(modes);
-  const res=computeResult(job);
-  if(reportMode==="client"){
-    const warn=[];
-    if(res.unanswered) warn.push(res.unanswered+" items are not rated and will be left out.");
-    if(res.flags.length) warn.push(res.flags.length+" flagged items should be reviewed by a person before this goes to the client.");
-    if(warn.length) m.append(h("div",{class:"warnbox noprint",style:"margin-top:12px"},h("strong",{},"Before you send this: "),warn.join(" ")));
-  }
-  const isClient=reportMode==="client";
-  m.append(h("div",{class:"row noprint"},
-    h("button",{class:"btn solid",onclick:()=>saveFile(slug(job.info.client)+(isClient?"-wildfire-readiness-plan-":"-internal-record-")+(job.info.date||today())+".html",exportDoc(isClient?clientReportHTML(job):internalReportHTML(job),isClient?"Wildfire Readiness Plan":"Internal Assessment Record"))},"Save report file"),
-    h("button",{class:"btn",onclick:()=>saveBackup([job])},"Save job backup"),
-    h("button",{class:"btn",onclick:()=>showText(reportText(job))},"Text version"),
-    h("button",{class:"btn",onclick:()=>{ try{ window.print(); }catch(e){ toast("Print isn't available here."); } }},"Print")));
-  m.append(h("p",{class:"notice noprint"},"Save report file gives you a file to email or share. Open it in a browser and choose Print, then Save as PDF, to make a PDF."));
-  const r=h("div",{class:"report"}); r.innerHTML=reportMode==="client"?clientReportHTML(job):internalReportHTML(job); m.append(r);
+function docFor(kind){
+  if(kind==="plan")return {html:planHTML(job),name:"wildfire-readiness-plan",title:"Wildfire Readiness Plan"};
+  if(kind==="quote")return {html:quoteHTML(job),name:"quote",title:"Quote"};
+  if(kind==="invoice"){const inv=job.invoices.find(i=>i.id===docInv)||job.invoices[job.invoices.length-1];return {html:invoiceHTML(job,inv),name:"invoice-"+(inv?inv.number:""),title:"Invoice"};}
+  if(kind==="crew")return {html:crewHTML(job),name:"crew-copy",title:"Work Order: Crew Copy"};
+  if(kind==="done")return {html:completionHTML(job),name:"work-completed",title:"Work Completed"};
+  return {html:internalHTML(job),name:"internal-record",title:"Internal Assessment Record"};
 }
-function showText(t){
-  const ta=h("textarea",{readonly:true},t);
-  const ov=h("div",{class:"overlay",onclick:e=>{if(e.target===ov)ov.remove();}},
-    h("div",{class:"sheet"},h("div",{class:"ttl"},"Text version"),ta,
-      h("div",{class:"row"},
-        h("button",{class:"btn solid",onclick:async()=>{ try{ await navigator.clipboard.writeText(t); }catch(e){ ta.focus(); ta.select(); } }},"Copy"),
-        h("button",{class:"btn",onclick:()=>ov.remove()},"Close"))));
-  document.body.append(ov); setTimeout(()=>{ta.focus();ta.select();},50);
+function renderDocs(m){
+  const kinds=[["plan","Client plan"],["quote","Quote"],["invoice","Invoice"],["crew","Crew copy"],["done","Completion"],["internal","Internal"]];
+  const dm=h("div",{class:"dm noprint"});
+  kinds.forEach(([k,l])=>dm.append(h("button",{class:docKind===k?"on":"",onclick:()=>{docKind=k;render();}},l)));
+  m.append(dm);
+  if(docKind==="invoice"&&job.invoices.length>1)m.append(h("label",{class:"f noprint",style:"margin-top:10px"},h("span",{},"Which invoice"),h("select",{onchange:e=>{docInv=e.target.value;render();}},job.invoices.map(i=>h("option",{value:i.id,selected:i.id===docInv},i.number+" · "+i.type)))));
+  const res=computeResult(job);
+  if(docKind==="plan"){const w=[];if(res.unanswered)w.push(res.unanswered+" items are not rated and will be left out.");if(res.flags.length)w.push(res.flags.length+" flagged items should be reviewed by a person before this goes to the client.");if(w.length)m.append(h("div",{class:"warnbox noprint",style:"margin-top:12px"},h("strong",{},"Before you send this: "),w.join(" ")));}
+  if(docKind==="quote"&&!job.quote){m.append(h("div",{class:"card",style:"margin-top:12px"},"No quote yet."),h("button",{class:"btn solid",onclick:()=>go({mode:"quote"})},"Build a quote"));return;}
+  if(docKind==="invoice"&&!job.invoices.length){m.append(h("div",{class:"card",style:"margin-top:12px"},"No invoices yet."),h("button",{class:"btn solid",onclick:()=>go({mode:"bill"})},"Go to billing"));return;}
+  if(docKind==="done"&&!includedActions(job).length){m.append(h("div",{class:"card",style:"margin-top:12px"},"No work is included yet."));return;}
+  const d=docFor(docKind);
+  m.append(h("div",{class:"row noprint"},
+    h("button",{class:"btn solid",onclick:()=>saveFile(slug(job.info.client)+"-"+d.name+"-"+(job.info.date||today())+".html",exportDoc(d.html,d.title))},"Save file"),
+    docKind==="plan"?h("button",{class:"btn",onclick:()=>showText(planText(job))},"Text version"):null,
+    h("button",{class:"btn",onclick:()=>{try{window.print();}catch(e){toast("Print isn't available here.");}}},"Print"),
+    h("button",{class:"btn",onclick:()=>saveBackup([job])},"Job backup")));
+  m.append(h("p",{class:"notice noprint"},"Save file makes a document you can email or share. Open it in a browser and choose Print, then Save as PDF, to make a PDF."));
+  const r=h("div",{class:"report"});r.innerHTML=d.html;m.append(r);
 }
 
-/* ============ INIT ============ */
+/* ================= INIT ================= */
 (async function(){
   loadSettings();
-  try{ if(window.claude&&window.claude.use){ window.claude.use("downloads").then(x=>{ dl=x; if(view==="jobs"||view==="report") render(); }).catch(()=>{}); } }catch(e){}
-  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
-  try{ if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js"); }catch(e){}
+  try{if(window.claude&&window.claude.use){window.claude.use("downloads").then(x=>{dl=x;}).catch(()=>{});}}catch(e){}
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
+  try{if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js");}catch(e){}
   await DB.init();
-  jobs=await DB.all();
+  jobs=(await DB.all()).map(migrate);
   render();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
